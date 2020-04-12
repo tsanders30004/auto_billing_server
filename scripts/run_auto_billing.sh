@@ -285,3 +285,5 @@ FROM auto_billing_dw.f_auto_billing_complete\G" auto_billing_dw
 
 read -p "press enter to continue..."
 
+echo Remember to execute stored procedure auto_billing_history.update_history()
+
