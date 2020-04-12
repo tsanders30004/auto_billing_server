@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>src_cardconex_account</name>
+    <name>stg_cardconex_account</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>1</trans_status>
+    <trans_status>0</trans_status>
     <directory>&#x2f;</directory>
     <parameters>
       <parameter>
@@ -438,34 +438,13 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2017&#x2f;03&#x2f;28 15&#x3a;05&#x3a;41.799</created_date>
+    <created_date>2020&#x2f;04&#x2f;10 11&#x3a;34&#x3a;50.250</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2017&#x2f;03&#x2f;28 15&#x3a;05&#x3a;41.799</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA&#x3d;</key_for_session_key>
+    <modified_date>2020&#x2f;04&#x2f;10 11&#x3a;34&#x3a;50.250</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>Staging Table - stg_cardconex_account&#xd;&#xa;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#xd;&#xa;-- Get data from the csv file.&#xd;&#xa;-- Load CardConex Account records to staging table.&#xd;&#xa;-- All rejected records are logged in a text file called cardconex_acct_err_yyyymmdd.txt in the errors folder.</note>
-      <xloc>16</xloc>
-      <yloc>16</yloc>
-      <width>844</width>
-      <heigth>130</heigth>
-      <fontname>Segoe UI</fontname>
-      <fontsize>9</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>0</backgroundcolorred>
-      <backgroundcolorgreen>255</backgroundcolorgreen>
-      <backgroundcolorblue>128</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
@@ -496,769 +475,28 @@
   </connection>
   <order>
     <hop>
-      <from>srcfile cardconex_account</from>
-      <to>sv2</to>
+      <from>get_cardconex_account_rows</from>
+      <to>select_values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>gfn</from>
-      <to>sv</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>sv</from>
-      <to>gv</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>gv</from>
-      <to>mjsv</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>mjsv</from>
-      <to>cfe</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>sv2</from>
-      <to>ac</to>
+      <from>select_values</from>
+      <to>calculate_modified_date</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>cfe</from>
-      <to>srcfile cardconex_account</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>ac</from>
-      <to>Sort rows</to>
+      <from>calculate_modified_date</from>
+      <to>replace_null_numeric_fields_with_null</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort rows</from>
-      <to>Insert &#x2f; Update</to>
+      <from>replace_null_numeric_fields_with_null</from>
+      <to>populate_stg_cardconex_account</to>
       <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Insert &#x2f; Update</from>
-      <to>CardConex Account Errors 2</to>
-      <enabled>N</enabled>
     </hop>
   </order>
   <step>
-    <name>CardConex Account Errors 2</name>
-    <type>TextFileOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <separator>,</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>None</compression>
-    <encoding>windows-1252</encoding>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>&#x24;&#x7b;dir_errors_default&#x7d;cardconex_acct_err_</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>Y</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format>yyyyMMdd</date_time_format>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1248</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Insert &#x2f; Update</name>
-    <type>InsertUpdate</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>SUW_SRVR_14</connection>
-    <commit>100</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
-      <table>&#x24;&#x7b;dest_table&#x7d;</table>
-      <key>
-        <name>id</name>
-        <field>acct_id</field>
-        <condition>&#x3d;</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>acct_id</name>
-        <rename>id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>acct_name</name>
-        <rename>name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>accountnumber</name>
-        <rename>accountnumber</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>cardconex_status</name>
-        <rename>cardconex_status</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_1</name>
-        <rename>mid_1</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_1_type</name>
-        <rename>mid_1_type</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_2</name>
-        <rename>mid_2</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_2_type</name>
-        <rename>mid_2_type</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_3</name>
-        <rename>mid_3</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_3_type</name>
-        <rename>mid_3_type</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_4</name>
-        <rename>mid_4</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_4_type</name>
-        <rename>mid_4_type</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_5</name>
-        <rename>mid_5</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>mid_5_type</name>
-        <rename>mid_5_type</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_name</name>
-        <rename>dba_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_street</name>
-        <rename>dba_street</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_city</name>
-        <rename>dba_city</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_state</name>
-        <rename>dba_state</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_postal_code</name>
-        <rename>dba_postal_code</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>dba_phone</name>
-        <rename>dba_phone</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>date_agreement_signed</name>
-        <rename>date_agreement_signed</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>lead_created_date</name>
-        <rename>lead_created_date</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>closure_date</name>
-        <rename>closure_date</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>months_in_business</name>
-        <rename>months_in_business</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>sic</name>
-        <rename>sic</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>owner_name</name>
-        <rename>owner_name</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>owner_firstname</name>
-        <rename>owner_firstname</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>owner_lastname</name>
-        <rename>owner_lastname</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>sales_representative</name>
-        <rename>sales_representative</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>business_dev_credit</name>
-        <rename>business_dev_credit</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>referring_organization_text</name>
-        <rename>referring_organization_text</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>bluefin_contract_start_date</name>
-        <rename>bluefin_contract_start_date</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>industry</name>
-        <rename>industry</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>segment</name>
-        <rename>segment</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>chain</name>
-        <rename>chain</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>relationship_chain</name>
-        <rename>relationship_chain</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>platform</name>
-        <rename>platform</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_credit_fee</name>
-        <rename>ach_credit_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>bfach_discount_rate</name>
-        <rename>bfach_discount_rate</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_monthly_fee</name>
-        <rename>ach_monthly_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_noc_fee</name>
-        <rename>ach_noc_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_per_gw_trans_fee</name>
-        <rename>ach_per_gw_trans_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_return_error_fee</name>
-        <rename>ach_return_error_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>ach_transaction_fee</name>
-        <rename>ach_transaction_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>bluefin_gateway_discount_rate</name>
-        <rename>bluefin_gateway_discount_rate</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>file_transfer_monthly_fee</name>
-        <rename>file_transfer_monthly_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gateway_monthly_fee</name>
-        <rename>gateway_monthly_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>group_tag_fee</name>
-        <rename>group_tag_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_per_auth_decline_fee</name>
-        <rename>gw_per_auth_decline_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>per_transaction_fee</name>
-        <rename>per_transaction_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_per_credit_fee</name>
-        <rename>gw_per_credit_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_per_refund_fee</name>
-        <rename>gw_per_refund_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_per_sale_fee</name>
-        <rename>gw_per_sale_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_per_token_fee</name>
-        <rename>gw_per_token_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>gw_reissued_fee</name>
-        <rename>gw_reissued_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>misc_monthly_fees</name>
-        <rename>misc_monthly_fees</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_device_activated</name>
-        <rename>p2pe_device_activated</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_device_activating_fee</name>
-        <rename>p2pe_device_activating_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_device_stored_fee</name>
-        <rename>p2pe_device_stored_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_encryption_fee</name>
-        <rename>p2pe_encryption_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_monthly_flat_fee</name>
-        <rename>p2pe_monthly_flat_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>one_time_key_injection_fees</name>
-        <rename>one_time_key_injection_fees</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>p2pe_tokenization_fee</name>
-        <rename>p2pe_tokenization_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>pci_scans_monthly_fee</name>
-        <rename>pci_scans_monthly_fee</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>hold_billing</name>
-        <rename>hold_billing</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>stop_billing</name>
-        <rename>stop_billing</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>billing_situation</name>
-        <rename>billing_situation</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>billing_frequency</name>
-        <rename>billing_occurrence</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>parent_acct_id</name>
-        <rename>parentid</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>date_modified</name>
-        <rename>lastmodifieddate</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>source_row</name>
-        <rename>source_row</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>source_file</name>
-        <rename>source_file</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>date_created</name>
-        <rename>date_created</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>date_updated</name>
-        <rename>date_updated</rename>
-        <update>Y</update>
-      </value>
-    </lookup>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1024</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Sort rows</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
-      <prefix>out</prefix>
-      <sort_size>1000000</sort_size>
-      <free_memory/>
-      <compress>N</compress>
-      <compress_variable/>
-      <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>source_file</name>
-        <ascending>Y</ascending>
-        <case_sensitive>N</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>880</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>ac</name>
-    <type>Constant</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>date_created</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>date_updated</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>768</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>cfe</name>
-    <type>ChangeFileEncoding</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <filenamefield>source_file</filenamefield>
-    <targetfilenamefield>proc_file</targetfilenamefield>
-    <sourceencoding>UTF-8</sourceencoding>
-    <targetencoding>ISO-8859-1</targetencoding>
-    <addsourceresultfilenames>N</addsourceresultfilenames>
-    <addtargetresultfilenames>N</addtargetresultfilenames>
-    <createparentfolder>N</createparentfolder>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>352</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>gfn</name>
-    <type>GetFileNames</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <filter>
-      <filterfiletype>all_files</filterfiletype>
-    </filter>
-    <doNotFailIfNoFile>N</doNotFailIfNoFile>
-    <rownum>N</rownum>
-    <isaddresult>Y</isaddresult>
-    <filefield>N</filefield>
-    <rownum_field/>
-    <filename_Field/>
-    <wildcard_Field/>
-    <exclude_wildcard_Field/>
-    <dynamic_include_subfolders>N</dynamic_include_subfolders>
-    <limit>0</limit>
-    <file>
-      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_source_default&#x2f;</name>
-      <filemask>&#x5e;cardconex_account.&#x2b;.&#x2a;&#x5c;.csv</filemask>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
-    </file>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>32</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>gv</name>
-    <type>GetVariable</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>dir_proc</name>
-        <variable>&#x24;&#x7b;dir_proc_default&#x7d;</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>192</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>mjsv</name>
-    <type>ScriptValueMod</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <compatible>N</compatible>
-    <optimizationLevel>9</optimizationLevel>
-    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
-        <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>&#x2f;&#x2f;Script here&#xd;&#xa;var proc_file &#x3d; dir_proc &#x2b; short_filename&#x3b;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
-      </jsScript>    </jsScripts>    <fields>      <field>        <name>proc_file</name>
-        <rename>proc_file</rename>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <replace>N</replace>
-      </field>    </fields>    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>srcfile cardconex_account</name>
+    <name>get_cardconex_account_rows</name>
     <type>TextFileInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -1270,8 +508,8 @@
     </partitioning>
     <accept_filenames>N</accept_filenames>
     <passing_through_fields>N</passing_through_fields>
-    <accept_field>proc_file</accept_field>
-    <accept_stepname>cfe</accept_stepname>
+    <accept_field/>
+    <accept_stepname/>
     <separator>,</separator>
     <enclosure>&#x22;</enclosure>
     <enclosure_breaks>N</enclosure_breaks>
@@ -1286,22 +524,22 @@
     <nr_lines_per_page>80</nr_lines_per_page>
     <nr_lines_doc_header>0</nr_lines_doc_header>
     <noempty>Y</noempty>
-    <include>N</include>
-    <include_field/>
+    <include>Y</include>
+    <include_field>long_filename</include_field>
     <rownum>Y</rownum>
-    <rownumByFile>Y</rownumByFile>
+    <rownumByFile>N</rownumByFile>
     <rownum_field>source_row</rownum_field>
     <format>mixed</format>
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name/>
-      <filemask/>
+      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_source_default&#x2f;</name>
+      <filemask>&#x5e;cardconex_account.&#x2b;.&#x2a;&#x5c;.csv</filemask>
       <exclude_filemask/>
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
-      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_source_default&#x2f;</name>
-      <filemask>&#x5e;cardconex_account.&#x2b;.&#x2a;&#x5c;.csv</filemask>
+      <name/>
+      <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
@@ -1321,9 +559,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>18</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1336,9 +574,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1351,9 +589,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1366,9 +604,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1381,9 +619,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1396,9 +634,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1411,9 +649,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1426,9 +664,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1441,9 +679,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1456,9 +694,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1471,9 +709,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1486,9 +724,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1501,9 +739,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1516,9 +754,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1531,9 +769,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1541,14 +779,14 @@
         <type>String</type>
         <format/>
         <currency>&#x24;</currency>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1561,9 +799,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1576,9 +814,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1591,9 +829,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1606,9 +844,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1621,9 +859,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1636,9 +874,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1651,9 +889,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1666,9 +904,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1681,9 +919,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1696,9 +934,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1711,9 +949,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1726,9 +964,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1741,9 +979,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1756,9 +994,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1771,9 +1009,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1786,9 +1024,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1801,9 +1039,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1816,9 +1054,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1831,9 +1069,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1846,9 +1084,9 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
@@ -1861,493 +1099,478 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>255</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>ach_credit_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>bfach_discount_rate</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>ach_monthly_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>ach_noc_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
-        <name>ach_per_gw_trans_fee</name>
+        <name>ach_per_gw_trans_feerraj</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>ach_return_error_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>ach_transaction_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>bluefin_gateway_discount_rate</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>file_transfer_monthly_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gateway_monthly_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>group_tag_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_per_auth_decline_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>per_transaction_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_per_credit_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_per_refund_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_per_sale_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_per_token_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>gw_reissued_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>misc_monthly_fees</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_device_activated</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_device_activating_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_device_stored_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_encryption_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_monthly_flat_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>one_time_key_injection_fees</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>p2pe_tokenization_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
+        <ifnull/>
         <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>pci_scans_monthly_fee</name>
         <type>Number</type>
-        <format>0.000</format>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
         <currency>&#x24;</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull>0.00</ifnull>
-        <position>-1</position>
-        <length>10</length>
-        <precision>4</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>hold_billing</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
         <ifnull/>
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>stop_billing</name>
-        <type>Date</type>
-        <format>yyyy-MM-dd</format>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>billing_situation</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>billing_occurrence</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
         <name>parentid</name>
         <type>String</type>
         <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
       <field>
-        <name>lastmodifieddate</name>
+        <name>billing_situation</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>billing_occurrence</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>hold_billing</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>stop_billing</name>
         <type>Date</type>
         <format>yyyy-MM-dd</format>
         <currency>&#x24;</currency>
@@ -2356,9 +1579,54 @@
         <nullif>-</nullif>
         <ifnull/>
         <position>-1</position>
-        <length>10</length>
+        <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>lastmodifieddate</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>pci_compliance_fee</name>
+        <type>Number</type>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>pci_non_compliance_fee</name>
+        <type>Number</type>
+        <format>0.&#x23;&#x23;&#x23;&#x23;&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
     </fields>
@@ -2395,43 +1663,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>512</xloc>
-      <yloc>176</yloc>
+      <xloc>96</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>sv</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>      <field>        <name>filename</name>
-        <rename>source_file</rename>
-      </field>      <field>        <name>short_filename</name>
-      </field>        <select_unspecified>N</select_unspecified>
-    </fields>    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>112</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>sv2</name>
+    <name>select_values</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -2442,9 +1681,9 @@
       <schema_name/>
     </partitioning>
     <fields>      <field>        <name>id</name>
-        <rename/>
+        <rename>acct_id</rename>
       </field>      <field>        <name>name</name>
-        <rename/>
+        <rename>acct_name</rename>
       </field>      <field>        <name>accountnumber</name>
         <rename/>
       </field>      <field>        <name>cardconex_status</name>
@@ -2523,8 +1762,8 @@
         <rename/>
       </field>      <field>        <name>ach_noc_fee</name>
         <rename/>
-      </field>      <field>        <name>ach_per_gw_trans_fee</name>
-        <rename/>
+      </field>      <field>        <name>ach_per_gw_trans_feerraj</name>
+        <rename>ach_per_gw_trans_fee</rename>
       </field>      <field>        <name>ach_return_error_fee</name>
         <rename/>
       </field>      <field>        <name>ach_transaction_fee</name>
@@ -2569,17 +1808,21 @@
         <rename/>
       </field>      <field>        <name>pci_scans_monthly_fee</name>
         <rename/>
+      </field>      <field>        <name>parentid</name>
+        <rename>parent_acct_id</rename>
+      </field>      <field>        <name>billing_situation</name>
+        <rename/>
+      </field>      <field>        <name>billing_occurrence</name>
+        <rename>billing_frequency</rename>
       </field>      <field>        <name>hold_billing</name>
         <rename/>
       </field>      <field>        <name>stop_billing</name>
         <rename/>
-      </field>      <field>        <name>billing_situation</name>
-        <rename/>
-      </field>      <field>        <name>billing_occurrence</name>
-        <rename/>
-      </field>      <field>        <name>parentid</name>
-        <rename/>
       </field>      <field>        <name>lastmodifieddate</name>
+        <rename>date_modified</rename>
+      </field>      <field>        <name>pci_compliance_fee</name>
+        <rename/>
+      </field>      <field>        <name>pci_non_compliance_fee</name>
         <rename/>
       </field>      <field>        <name>source_row</name>
         <rename/>
@@ -2594,25 +1837,429 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>672</xloc>
-      <yloc>176</yloc>
+      <xloc>256</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>populate_stg_cardconex_account</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
+    <table>&#x24;&#x7b;dest_table&#x7d;</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>acct_id</column_name>
+          <stream_name>acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>acct_name</column_name>
+          <stream_name>acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>accountnumber</column_name>
+          <stream_name>accountnumber</stream_name>
+        </field>
+        <field>
+          <column_name>cardconex_status</column_name>
+          <stream_name>cardconex_status</stream_name>
+        </field>
+        <field>
+          <column_name>mid_1</column_name>
+          <stream_name>mid_1</stream_name>
+        </field>
+        <field>
+          <column_name>mid_1_type</column_name>
+          <stream_name>mid_1_type</stream_name>
+        </field>
+        <field>
+          <column_name>mid_2</column_name>
+          <stream_name>mid_2</stream_name>
+        </field>
+        <field>
+          <column_name>mid_2_type</column_name>
+          <stream_name>mid_2_type</stream_name>
+        </field>
+        <field>
+          <column_name>mid_3</column_name>
+          <stream_name>mid_3</stream_name>
+        </field>
+        <field>
+          <column_name>mid_3_type</column_name>
+          <stream_name>mid_3_type</stream_name>
+        </field>
+        <field>
+          <column_name>mid_4</column_name>
+          <stream_name>mid_4</stream_name>
+        </field>
+        <field>
+          <column_name>mid_4_type</column_name>
+          <stream_name>mid_4_type</stream_name>
+        </field>
+        <field>
+          <column_name>mid_5</column_name>
+          <stream_name>mid_5</stream_name>
+        </field>
+        <field>
+          <column_name>mid_5_type</column_name>
+          <stream_name>mid_5_type</stream_name>
+        </field>
+        <field>
+          <column_name>dba_name</column_name>
+          <stream_name>dba_name</stream_name>
+        </field>
+        <field>
+          <column_name>dba_street</column_name>
+          <stream_name>dba_street</stream_name>
+        </field>
+        <field>
+          <column_name>dba_city</column_name>
+          <stream_name>dba_city</stream_name>
+        </field>
+        <field>
+          <column_name>dba_state</column_name>
+          <stream_name>dba_state</stream_name>
+        </field>
+        <field>
+          <column_name>dba_postal_code</column_name>
+          <stream_name>dba_postal_code</stream_name>
+        </field>
+        <field>
+          <column_name>dba_phone</column_name>
+          <stream_name>dba_phone</stream_name>
+        </field>
+        <field>
+          <column_name>date_agreement_signed</column_name>
+          <stream_name>date_agreement_signed</stream_name>
+        </field>
+        <field>
+          <column_name>lead_created_date</column_name>
+          <stream_name>lead_created_date</stream_name>
+        </field>
+        <field>
+          <column_name>closure_date</column_name>
+          <stream_name>closure_date</stream_name>
+        </field>
+        <field>
+          <column_name>months_in_business</column_name>
+          <stream_name>months_in_business</stream_name>
+        </field>
+        <field>
+          <column_name>sic</column_name>
+          <stream_name>sic</stream_name>
+        </field>
+        <field>
+          <column_name>owner_name</column_name>
+          <stream_name>owner_name</stream_name>
+        </field>
+        <field>
+          <column_name>owner_firstname</column_name>
+          <stream_name>owner_firstname</stream_name>
+        </field>
+        <field>
+          <column_name>owner_lastname</column_name>
+          <stream_name>owner_lastname</stream_name>
+        </field>
+        <field>
+          <column_name>sales_representative</column_name>
+          <stream_name>sales_representative</stream_name>
+        </field>
+        <field>
+          <column_name>business_dev_credit</column_name>
+          <stream_name>business_dev_credit</stream_name>
+        </field>
+        <field>
+          <column_name>referring_organization_text</column_name>
+          <stream_name>referring_organization_text</stream_name>
+        </field>
+        <field>
+          <column_name>bluefin_contract_start_date</column_name>
+          <stream_name>bluefin_contract_start_date</stream_name>
+        </field>
+        <field>
+          <column_name>industry</column_name>
+          <stream_name>industry</stream_name>
+        </field>
+        <field>
+          <column_name>segment</column_name>
+          <stream_name>segment</stream_name>
+        </field>
+        <field>
+          <column_name>chain</column_name>
+          <stream_name>chain</stream_name>
+        </field>
+        <field>
+          <column_name>relationship_chain</column_name>
+          <stream_name>relationship_chain</stream_name>
+        </field>
+        <field>
+          <column_name>platform</column_name>
+          <stream_name>platform</stream_name>
+        </field>
+        <field>
+          <column_name>ach_credit_fee</column_name>
+          <stream_name>ach_credit_fee</stream_name>
+        </field>
+        <field>
+          <column_name>bfach_discount_rate</column_name>
+          <stream_name>bfach_discount_rate</stream_name>
+        </field>
+        <field>
+          <column_name>ach_monthly_fee</column_name>
+          <stream_name>ach_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>ach_noc_fee</column_name>
+          <stream_name>ach_noc_fee</stream_name>
+        </field>
+        <field>
+          <column_name>ach_per_gw_trans_fee</column_name>
+          <stream_name>ach_per_gw_trans_fee</stream_name>
+        </field>
+        <field>
+          <column_name>ach_return_error_fee</column_name>
+          <stream_name>ach_return_error_fee</stream_name>
+        </field>
+        <field>
+          <column_name>ach_transaction_fee</column_name>
+          <stream_name>ach_transaction_fee</stream_name>
+        </field>
+        <field>
+          <column_name>bluefin_gateway_discount_rate</column_name>
+          <stream_name>bluefin_gateway_discount_rate</stream_name>
+        </field>
+        <field>
+          <column_name>file_transfer_monthly_fee</column_name>
+          <stream_name>file_transfer_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gateway_monthly_fee</column_name>
+          <stream_name>gateway_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>group_tag_fee</column_name>
+          <stream_name>group_tag_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_auth_decline_fee</column_name>
+          <stream_name>gw_per_auth_decline_fee</stream_name>
+        </field>
+        <field>
+          <column_name>per_transaction_fee</column_name>
+          <stream_name>per_transaction_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_credit_fee</column_name>
+          <stream_name>gw_per_credit_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_refund_fee</column_name>
+          <stream_name>gw_per_refund_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_sale_fee</column_name>
+          <stream_name>gw_per_sale_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_token_fee</column_name>
+          <stream_name>gw_per_token_fee</stream_name>
+        </field>
+        <field>
+          <column_name>gw_reissued_fee</column_name>
+          <stream_name>gw_reissued_fee</stream_name>
+        </field>
+        <field>
+          <column_name>misc_monthly_fees</column_name>
+          <stream_name>misc_monthly_fees</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_activated</column_name>
+          <stream_name>p2pe_device_activated</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_activating_fee</column_name>
+          <stream_name>p2pe_device_activating_fee</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_stored_fee</column_name>
+          <stream_name>p2pe_device_stored_fee</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_encryption_fee</column_name>
+          <stream_name>p2pe_encryption_fee</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_monthly_flat_fee</column_name>
+          <stream_name>p2pe_monthly_flat_fee</stream_name>
+        </field>
+        <field>
+          <column_name>one_time_key_injection_fees</column_name>
+          <stream_name>one_time_key_injection_fees</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_tokenization_fee</column_name>
+          <stream_name>p2pe_tokenization_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pci_scans_monthly_fee</column_name>
+          <stream_name>pci_scans_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>parent_acct_id</column_name>
+          <stream_name>parent_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>billing_situation</column_name>
+          <stream_name>billing_situation</stream_name>
+        </field>
+        <field>
+          <column_name>billing_frequency</column_name>
+          <stream_name>billing_frequency</stream_name>
+        </field>
+        <field>
+          <column_name>hold_billing</column_name>
+          <stream_name>hold_billing</stream_name>
+        </field>
+        <field>
+          <column_name>stop_billing</column_name>
+          <stream_name>stop_billing</stream_name>
+        </field>
+        <field>
+          <column_name>date_modified</column_name>
+          <stream_name>date_modified</stream_name>
+        </field>
+        <field>
+          <column_name>pci_compliance_fee</column_name>
+          <stream_name>pci_compliance_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pci_non_compliance_fee</column_name>
+          <stream_name>pci_non_compliance_fee</stream_name>
+        </field>
+        <field>
+          <column_name>source_row</column_name>
+          <stream_name>source_row</stream_name>
+        </field>
+        <field>
+          <column_name>source_file</column_name>
+          <stream_name>source_file</stream_name>
+        </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>calculate_modified_date</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var js_date_modified&#x3b;&#xd;&#xa;&#xd;&#xa;js_date_modified &#x3d; date_modified.substring&#x28;0, 4&#x29;&#xd;&#xa;                  .concat&#x28;date_modified.substr&#x28;5,  2&#x29;&#x29;&#xd;&#xa;                  .concat&#x28;date_modified.substr&#x28;8,  2&#x29;&#x29;&#xd;&#xa;                  .concat&#x28;date_modified.substr&#x28;11, 2&#x29;&#x29;&#xd;&#xa;                  .concat&#x28;date_modified.substr&#x28;14, 2&#x29;&#x29;&#xd;&#xa;                  .concat&#x28;date_modified.substr&#x28;17, 2&#x29;&#x29;&#x3b;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>js_date_modified</name>
+        <rename>date_modified</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>replace_null_numeric_fields_with_null</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>N</selectFields>
+      <selectValuesType>Y</selectValuesType>
+      <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      <valuetype>
+        <name>Number</name>
+        <value>0</value>
+        <mask/>
+        <set_type_empty_string>N</set_type_empty_string>
+        </valuetype>
+      </valuetypes>
+    <fields>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step_error_handling>
-      <error>
-        <source_step>Insert &#x2f; Update</source_step>
-        <target_step>CardConex Account Errors 2</target_step>
-        <is_enabled>Y</is_enabled>
-        <nr_valuename/>
-        <descriptions_valuename/>
-        <fields_valuename/>
-        <codes_valuename/>
-        <max_errors/>
-        <max_pct_errors/>
-        <min_pct_rows/>
-      </error>
   </step_error_handling>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
