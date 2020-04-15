@@ -447,8 +447,8 @@
   <notepads>
     <notepad>
       <note>13 Apr 2020&#xd;&#xa;-----------&#xd;&#xa;Many fields had to be added to the replace_null_values step&#xd;&#xa;in order for this to run with sales force beta data.&#xd;&#xa;</note>
-      <xloc>48</xloc>
-      <yloc>384</yloc>
+      <xloc>16</xloc>
+      <yloc>16</yloc>
       <width>482</width>
       <heigth>86</heigth>
       <fontname>Courier New</fontname>
@@ -512,7 +512,7 @@
     </hop>
     <hop>
       <from>formula_02</from>
-      <to>select_values</to>
+      <to>select_values_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -521,7 +521,7 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>select_values</from>
+      <from>select_values_01</from>
       <to>replace_null_values</to>
       <enabled>Y</enabled>
     </hop>
@@ -533,7 +533,7 @@
     <hop>
       <from>formula_03</from>
       <to>d_merchant_dim_lookup_update</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>database_lookup_mcc</from>
@@ -553,6 +553,36 @@
     <hop>
       <from>start_date</from>
       <to>stream_lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>formula_03</from>
+      <to>sort_by_cardconex_acct_id</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>get_billing_frequency_sorted_by_acct_id</from>
+      <to>left_join_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_by_cardconex_acct_id</from>
+      <to>left_join_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>left_join_01</from>
+      <to>d_merchant_dim_lookup_update</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>left_join_01</from>
+      <to>select_values_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_02</from>
+      <to>populate_d_merchant</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -733,8 +763,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
-      <yloc>48</yloc>
+      <xloc>432</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -930,8 +960,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1216</xloc>
-      <yloc>48</yloc>
+      <xloc>1264</xloc>
+      <yloc>400</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -984,8 +1014,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>48</yloc>
+      <xloc>224</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1414,8 +1444,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1072</xloc>
-      <yloc>144</yloc>
+      <xloc>1088</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1446,8 +1476,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>752</xloc>
-      <yloc>48</yloc>
+      <xloc>768</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1625,8 +1655,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1072</xloc>
-      <yloc>48</yloc>
+      <xloc>1088</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1749,14 +1779,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>960</xloc>
-      <yloc>48</yloc>
+      <xloc>976</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>select_values</name>
+    <name>select_values_01</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -1771,16 +1801,23 @@
       </field>      <field>        <name>acct_name</name>
         <rename>cardconex_acct_name</rename>
       </field>      <field>        <name>dba_name</name>
+        <rename/>
       </field>      <field>        <name>dba_city</name>
+        <rename/>
       </field>      <field>        <name>dba_state</name>
+        <rename/>
       </field>      <field>        <name>dba_postal_code</name>
         <rename>dba_zip</rename>
       </field>      <field>        <name>dba_phone</name>
+        <rename/>
       </field>      <field>        <name>mid5</name>
+        <rename/>
       </field>      <field>        <name>mid_5</name>
+        <rename/>
       </field>      <field>        <name>accountnumber</name>
         <rename>merchant_id</rename>
       </field>      <field>        <name>start_date</name>
+        <rename/>
       </field>      <field>        <name>mcc_code</name>
         <rename>mcc_code_now</rename>
       </field>      <field>        <name>mcc_desc</name>
@@ -1798,18 +1835,31 @@
       </field>      <field>        <name>relationship_chain</name>
         <rename>rchain_now</rename>
       </field>      <field>        <name>payconex_acct_name</name>
+        <rename/>
       </field>      <field>        <name>decryptx_acct_name</name>
+        <rename/>
       </field>      <field>        <name>mcc_code_then</name>
+        <rename/>
       </field>      <field>        <name>mcc_desc_then</name>
+        <rename/>
       </field>      <field>        <name>mcc_group_then</name>
+        <rename/>
       </field>      <field>        <name>industry_then</name>
+        <rename/>
       </field>      <field>        <name>org_then</name>
+        <rename/>
       </field>      <field>        <name>segment_then</name>
+        <rename/>
       </field>      <field>        <name>chain_then</name>
+        <rename/>
       </field>      <field>        <name>rchain_then</name>
+        <rename/>
       </field>      <field>        <name>decryptx_acct_id</name>
+        <rename/>
       </field>      <field>        <name>date_created</name>
+        <rename/>
       </field>      <field>        <name>date_updated</name>
+        <rename/>
       </field>        <select_unspecified>N</select_unspecified>
       <remove>        <name>mid_5</name>
       </remove>      <meta>        <name>mid5</name>
@@ -1835,8 +1885,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>48</yloc>
+      <xloc>864</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1894,8 +1944,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>528</xloc>
-      <yloc>48</yloc>
+      <xloc>544</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1926,8 +1976,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>64</xloc>
-      <yloc>48</yloc>
+      <xloc>80</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1958,8 +2008,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>224</yloc>
+      <xloc>336</xloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2000,8 +2050,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>48</yloc>
+      <xloc>336</xloc>
+      <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2040,8 +2090,372 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>656</xloc>
-      <yloc>48</yloc>
+      <xloc>672</xloc>
+      <yloc>160</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_by_cardconex_acct_id</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>cardconex_acct_id</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>get_billing_frequency_sorted_by_acct_id</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <sql>SELECT acct_id, billing_frequency FROM auto_billing_staging.stg_cardconex_account ORDER BY acct_id&#x3b;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>912</xloc>
+      <yloc>400</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>left_join_01</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+<join_type>LEFT OUTER</join_type>
+<step1>sort_by_cardconex_acct_id</step1>
+<step2>get_billing_frequency_sorted_by_acct_id</step2>
+    <keys_1>
+      <key>cardconex_acct_id</key>
+    </keys_1>
+    <keys_2>
+      <key>acct_id</key>
+    </keys_2>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>400</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>populate_d_merchant</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
+    <table>&#x24;&#x7b;dest_table&#x7d;</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>cardconex_acct_id</column_name>
+          <stream_name>cardconex_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>cardconex_acct_name</column_name>
+          <stream_name>cardconex_acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>dba_name</column_name>
+          <stream_name>dba_name</stream_name>
+        </field>
+        <field>
+          <column_name>dba_city</column_name>
+          <stream_name>dba_city</stream_name>
+        </field>
+        <field>
+          <column_name>dba_state</column_name>
+          <stream_name>dba_state</stream_name>
+        </field>
+        <field>
+          <column_name>dba_zip</column_name>
+          <stream_name>dba_zip</stream_name>
+        </field>
+        <field>
+          <column_name>dba_phone</column_name>
+          <stream_name>dba_phone</stream_name>
+        </field>
+        <field>
+          <column_name>payconex_acct_id</column_name>
+          <stream_name>payconex_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>merchant_id</column_name>
+          <stream_name>merchant_id</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_code_now</column_name>
+          <stream_name>mcc_code_now</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_desc_now</column_name>
+          <stream_name>mcc_desc_now</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_group_now</column_name>
+          <stream_name>mcc_group_now</stream_name>
+        </field>
+        <field>
+          <column_name>industry_now</column_name>
+          <stream_name>industry_now</stream_name>
+        </field>
+        <field>
+          <column_name>org_now</column_name>
+          <stream_name>org_now</stream_name>
+        </field>
+        <field>
+          <column_name>segment_now</column_name>
+          <stream_name>segment_now</stream_name>
+        </field>
+        <field>
+          <column_name>chain_now</column_name>
+          <stream_name>chain_now</stream_name>
+        </field>
+        <field>
+          <column_name>rchain_now</column_name>
+          <stream_name>rchain_now</stream_name>
+        </field>
+        <field>
+          <column_name>payconex_acct_name</column_name>
+          <stream_name>payconex_acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>decryptx_acct_name</column_name>
+          <stream_name>decryptx_acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_code_then</column_name>
+          <stream_name>mcc_code_then</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_desc_then</column_name>
+          <stream_name>mcc_desc_then</stream_name>
+        </field>
+        <field>
+          <column_name>mcc_group_then</column_name>
+          <stream_name>mcc_group_then</stream_name>
+        </field>
+        <field>
+          <column_name>industry_then</column_name>
+          <stream_name>industry_then</stream_name>
+        </field>
+        <field>
+          <column_name>org_then</column_name>
+          <stream_name>org_then</stream_name>
+        </field>
+        <field>
+          <column_name>segment_then</column_name>
+          <stream_name>segment_then</stream_name>
+        </field>
+        <field>
+          <column_name>chain_then</column_name>
+          <stream_name>chain_then</stream_name>
+        </field>
+        <field>
+          <column_name>rchain_then</column_name>
+          <stream_name>rchain_then</stream_name>
+        </field>
+        <field>
+          <column_name>decryptx_acct_id</column_name>
+          <stream_name>decryptx_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>date_created</column_name>
+          <stream_name>date_created</stream_name>
+        </field>
+        <field>
+          <column_name>date_updated</column_name>
+          <stream_name>date_updated</stream_name>
+        </field>
+        <field>
+          <column_name>billing_frequency</column_name>
+          <stream_name>billing_frequency</stream_name>
+        </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1264</xloc>
+      <yloc>496</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_02</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>cardconex_acct_id</name>
+        <rename/>
+      </field>      <field>        <name>cardconex_acct_name</name>
+        <rename/>
+      </field>      <field>        <name>dba_name</name>
+        <rename/>
+      </field>      <field>        <name>dba_city</name>
+        <rename/>
+      </field>      <field>        <name>dba_state</name>
+        <rename/>
+      </field>      <field>        <name>dba_zip</name>
+        <rename/>
+      </field>      <field>        <name>dba_phone</name>
+        <rename/>
+      </field>      <field>        <name>payconex_acct_id</name>
+        <rename/>
+      </field>      <field>        <name>merchant_id</name>
+        <rename/>
+      </field>      <field>        <name>mcc_code_now</name>
+        <rename/>
+      </field>      <field>        <name>mcc_desc_now</name>
+        <rename/>
+      </field>      <field>        <name>mcc_group_now</name>
+        <rename/>
+      </field>      <field>        <name>industry_now</name>
+        <rename/>
+      </field>      <field>        <name>org_now</name>
+        <rename/>
+      </field>      <field>        <name>segment_now</name>
+        <rename/>
+      </field>      <field>        <name>chain_now</name>
+        <rename/>
+      </field>      <field>        <name>rchain_now</name>
+        <rename/>
+      </field>      <field>        <name>payconex_acct_name</name>
+        <rename/>
+      </field>      <field>        <name>decryptx_acct_name</name>
+        <rename/>
+      </field>      <field>        <name>mcc_code_then</name>
+        <rename/>
+      </field>      <field>        <name>mcc_desc_then</name>
+        <rename/>
+      </field>      <field>        <name>mcc_group_then</name>
+        <rename/>
+      </field>      <field>        <name>industry_then</name>
+        <rename/>
+      </field>      <field>        <name>org_then</name>
+        <rename/>
+      </field>      <field>        <name>segment_then</name>
+        <rename/>
+      </field>      <field>        <name>chain_then</name>
+        <rename/>
+      </field>      <field>        <name>rchain_then</name>
+        <rename/>
+      </field>      <field>        <name>decryptx_acct_id</name>
+        <rename/>
+      </field>      <field>        <name>date_created</name>
+        <rename/>
+      </field>      <field>        <name>date_updated</name>
+        <rename/>
+      </field>      <field>        <name>billing_frequency</name>
+        <rename/>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1088</xloc>
+      <yloc>496</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
