@@ -128,7 +128,8 @@ mysql -v -v -e"call auto_billing_dw.update_billing_frequency()"
 read -p "press enter to run dw_f_decryptx_day.ktr..."
 
 # ############################## f_decryptx_day #######################################################################
-# Output Table:  auto_billing_dw.f_decryptx_day_alt and auto_billing_dw.f_decryptx_day
+# Output Tables:  auto_billing_dw.f_decryptx_day_alt and auto_billing_dw.f_decryptx_day
+#                 auto_billing_dw_d_device
 cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
 mysql -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_decryptx_day_alt; truncate auto_billing_dw.f_decryptx_day; set foreign_key_checks=1;"
 /usr/local/install/data-integration/pan.sh -file dw_f_decryptx_day.ktr
