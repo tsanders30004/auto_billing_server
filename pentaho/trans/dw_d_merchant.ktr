@@ -446,11 +446,11 @@
   </info>
   <notepads>
     <notepad>
-      <note>13 Apr 2020&#xd;&#xa;-----------&#xd;&#xa;Many fields had to be added to the replace_null_values step&#xd;&#xa;in order for this to run with sales force beta data.&#xd;&#xa;</note>
+      <note>13 Apr 2020 &#x5b;TSS&#x5d;&#xd;&#xa;-----------------&#xd;&#xa;Many fields had to be added to the replace_null_values step&#xd;&#xa;in order for this to run with sales force beta data.&#xd;&#xa;&#xd;&#xa;28 Apr 2020 &#x5b;TSS&#x5d;&#xd;&#xa;-----------------&#xd;&#xa;The original version of this KTR used a dimension lookup&#x2f;update step &#x28;d_merchant_dim_lookup_update&#x29; &#xd;&#xa;on the d_merchant table, which I replaced with a simpler table output step &#x28;populate_d_merchant&#x29;.&#xd;&#xa;&#xd;&#xa;Values were not being assigned to effective_date or expiration date &#x28;which is import for dimension lookups&#xd;&#xa;but not table ouuputs.&#x29;  The MySQL table definition therefore defaulted these values to 0000-00-00.&#xd;&#xa;&#xd;&#xa;dw_f_decryptx_day.ktr also does a dimension lookup which needs effective_date and expiration date to be populated.&#xd;&#xa;Since there were not populated, some merchants ended up with two rows instead of one.  Neither row by itselt&#xd;&#xa;was complete. &#xd;&#xa;&#xd;&#xa;The solution to this was to explicitly define non-zero values for these dates, &#xd;&#xa;which was done in the calculations step&#x3a;&#xd;&#xa;... var effective_date &#x3d; 19000101000000&#x3b;&#xd;&#xa;... var expiration_date &#x3d; 21990101235959&#x3b;&#xd;&#xa;&#xd;&#xa;I will make this a best practice going forward.&#xd;&#xa;</note>
       <xloc>16</xloc>
       <yloc>16</yloc>
-      <width>482</width>
-      <heigth>86</heigth>
+      <width>922</width>
+      <heigth>376</heigth>
       <fontname>Courier New</fontname>
       <fontsize>10</fontsize>
       <fontbold>N</fontbold>
@@ -546,11 +546,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>formula_03</from>
-      <to>debug_01</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
       <from>start_date</from>
       <to>stream_lookup</to>
       <enabled>Y</enabled>
@@ -589,11 +584,6 @@
       <from>select_values_02</from>
       <to>populate_d_merchant</to>
       <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>stream_lookup</from>
-      <to>debug_05</to>
-      <enabled>N</enabled>
     </hop>
     <hop>
       <from>select_values_02</from>
@@ -778,8 +768,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>160</yloc>
+      <xloc>464</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -799,7 +789,7 @@
     <optimizationLevel>9</optimizationLevel>
     <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
         <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>&#x2f;&#x2f; all of the following default to &#x27;Unknown&#x27; in the original version of this code.&#xd;&#xa;&#xd;&#xa;var js_chain_now  &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;var js_chain_then &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;var js_rchain_now  &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;var js_rchain_then &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;</jsScript_script>
+        <jsScript_script>&#x2f;&#x2f; all of the following default to &#x27;Unknown&#x27; in the original version of this code.&#xd;&#xa;&#xd;&#xa;var js_chain_now  &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;var js_chain_then &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;var js_rchain_now  &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;var js_rchain_then &#x3d; &#x27;Unknown&#x27;&#x3b;&#xd;&#xa;&#xd;&#xa;var effective_date &#x3d; 19000101000000&#x3b;&#xd;&#xa;var expiration_date &#x3d; 21990101235959&#x3b;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
       </jsScript>    </jsScripts>    <fields>      <field>        <name>js_chain_now</name>
         <rename>chain_now</rename>
         <type>String</type>
@@ -824,6 +814,18 @@
         <length>-1</length>
         <precision>-1</precision>
         <replace>Y</replace>
+      </field>      <field>        <name>effective_date</name>
+        <rename>effective_date</rename>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>expiration_date</name>
+        <rename>expiration_date</rename>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
       </field>    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
@@ -832,8 +834,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>496</yloc>
+      <xloc>1120</xloc>
+      <yloc>784</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1029,8 +1031,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1264</xloc>
-      <yloc>400</yloc>
+      <xloc>1296</xloc>
+      <yloc>688</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1083,438 +1085,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
-      <yloc>160</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>debug_01</name>
-    <type>TextFileOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>None</compression>
-    <encoding>windows-1252</encoding>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>D&#x3a;&#x5c;temp&#x5c;debug_03</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-      <field>
-        <name>cardconex_acct_id</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>cardconex_acct_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_city</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_state</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_zip</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_phone</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>payconex_acct_id</name>
-        <type>Integer</type>
-        <format>0</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>merchant_id</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>start_date</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_code_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_desc_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_group_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>industry_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>org_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>segment_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>chain_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>rchain_now</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>payconex_acct_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>decryptx_acct_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_code_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_desc_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_group_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>industry_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>org_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>segment_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>chain_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>rchain_then</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>decryptx_acct_id</name>
-        <type>Integer</type>
-        <format>0</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>date_created</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>date_updated</name>
-        <type>Timestamp</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1088</xloc>
-      <yloc>48</yloc>
+      <xloc>256</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1545,8 +1117,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>160</yloc>
+      <xloc>800</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1724,8 +1296,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>160</yloc>
+      <xloc>1120</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1756,8 +1328,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>912</xloc>
-      <yloc>400</yloc>
+      <xloc>944</xloc>
+      <yloc>688</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1790,8 +1362,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>400</yloc>
+      <xloc>1120</xloc>
+      <yloc>688</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1949,6 +1521,14 @@
           <column_name>billing_frequency</column_name>
           <stream_name>billing_frequency</stream_name>
         </field>
+        <field>
+          <column_name>effective_date</column_name>
+          <stream_name>effective_date</stream_name>
+        </field>
+        <field>
+          <column_name>expiration_date</column_name>
+          <stream_name>expiration_date</stream_name>
+        </field>
     </fields>
     <cluster_schema/>
     <remotesteps>
@@ -1958,8 +1538,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1344</xloc>
-      <yloc>496</yloc>
+      <xloc>1376</xloc>
+      <yloc>784</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2073,6 +1653,12 @@
         <mask/>
         <set_empty_string>N</set_empty_string>
         </field>
+      <field>
+        <name>merchant_id</name>
+        <value/>
+        <mask/>
+        <set_empty_string>Y</set_empty_string>
+        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
@@ -2082,8 +1668,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>976</xloc>
-      <yloc>160</yloc>
+      <xloc>1008</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2168,8 +1754,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>864</xloc>
-      <yloc>160</yloc>
+      <xloc>896</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2186,36 +1772,71 @@
       <schema_name/>
     </partitioning>
     <fields>      <field>        <name>cardconex_acct_id</name>
+        <rename/>
       </field>      <field>        <name>cardconex_acct_name</name>
+        <rename/>
       </field>      <field>        <name>dba_name</name>
+        <rename/>
       </field>      <field>        <name>dba_city</name>
+        <rename/>
       </field>      <field>        <name>dba_state</name>
+        <rename/>
       </field>      <field>        <name>dba_zip</name>
+        <rename/>
       </field>      <field>        <name>dba_phone</name>
+        <rename/>
       </field>      <field>        <name>payconex_acct_id</name>
+        <rename/>
       </field>      <field>        <name>merchant_id</name>
+        <rename/>
       </field>      <field>        <name>mcc_code_now</name>
+        <rename/>
       </field>      <field>        <name>mcc_desc_now</name>
+        <rename/>
       </field>      <field>        <name>mcc_group_now</name>
+        <rename/>
       </field>      <field>        <name>industry_now</name>
+        <rename/>
       </field>      <field>        <name>org_now</name>
+        <rename/>
       </field>      <field>        <name>segment_now</name>
+        <rename/>
       </field>      <field>        <name>chain_now</name>
+        <rename/>
       </field>      <field>        <name>rchain_now</name>
+        <rename/>
       </field>      <field>        <name>payconex_acct_name</name>
+        <rename/>
       </field>      <field>        <name>decryptx_acct_name</name>
+        <rename/>
       </field>      <field>        <name>mcc_code_then</name>
+        <rename/>
       </field>      <field>        <name>mcc_desc_then</name>
+        <rename/>
       </field>      <field>        <name>mcc_group_then</name>
+        <rename/>
       </field>      <field>        <name>industry_then</name>
+        <rename/>
       </field>      <field>        <name>org_then</name>
+        <rename/>
       </field>      <field>        <name>segment_then</name>
+        <rename/>
       </field>      <field>        <name>chain_then</name>
+        <rename/>
       </field>      <field>        <name>rchain_then</name>
+        <rename/>
       </field>      <field>        <name>decryptx_acct_id</name>
+        <rename/>
       </field>      <field>        <name>date_created</name>
+        <rename/>
       </field>      <field>        <name>date_updated</name>
+        <rename/>
       </field>      <field>        <name>billing_frequency</name>
+        <rename/>
+      </field>      <field>        <name>effective_date</name>
+        <rename/>
+      </field>      <field>        <name>expiration_date</name>
+        <rename/>
       </field>        <select_unspecified>N</select_unspecified>
     </fields>    <cluster_schema/>
     <remotesteps>
@@ -2225,8 +1846,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1200</xloc>
-      <yloc>496</yloc>
+      <xloc>1232</xloc>
+      <yloc>784</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2284,8 +1905,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>544</xloc>
-      <yloc>160</yloc>
+      <xloc>576</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2326,8 +1947,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>288</yloc>
+      <xloc>1120</xloc>
+      <yloc>576</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2344,7 +1965,7 @@
       <schema_name/>
     </partitioning>
     <connection>SUW_SRVR_14</connection>
-    <sql>SELECT acct_id,&#xd;&#xa;       acct_name,&#xd;&#xa;       dba_name,&#xd;&#xa;       dba_city,&#xd;&#xa;       dba_state,&#xd;&#xa;       dba_postal_code,&#xd;&#xa;       dba_phone,&#xd;&#xa;       0 AS mid_5,      -- this is not defined in beta&#xd;&#xa;       accountnumber,&#xd;&#xa;       sic AS mcc_code,&#xd;&#xa;       industry,&#xd;&#xa;       referring_organization_text,&#xd;&#xa;       segment,&#xd;&#xa;       &#x27;&#x2a;&#x2a;&#x2a; BETA &#x2a;&#x2a;&#x2a; UNDEFINED&#x27; AS chain,&#xd;&#xa;       &#x27;&#x2a;&#x2a;&#x2a; BETA &#x2a;&#x2a;&#x2a; UNDEFINED&#x27; AS relationship_chain&#xd;&#xa;FROM auto_billing_staging.stg_cardconex_account&#xd;&#xa;ORDER BY acct_id</sql>
+    <sql>SELECT &#xd;&#xa;     acct_id&#xd;&#xa;    ,acct_name&#xd;&#xa;    ,dba_name&#xd;&#xa;    ,dba_city&#xd;&#xa;    ,dba_state&#xd;&#xa;    ,dba_postal_code&#xd;&#xa;    ,dba_phone&#xd;&#xa;    ,NULL                        AS mid_5 -- this is not defined in beta&#xd;&#xa;    ,COALESCE&#x28;accountnumber, &#x27;&#x27;&#x29; AS accountnumber&#xd;&#xa;    ,COALESCE&#x28;sic, &#x27;&#x27;&#x29;           AS mcc_code&#xd;&#xa;    ,industry&#xd;&#xa;    ,referring_organization_text&#xd;&#xa;    ,segment&#xd;&#xa;    ,&#x27;&#x2a;&#x2a;&#x2a; BETA &#x2a;&#x2a;&#x2a; UNDEFINED&#x27;    AS chain&#xd;&#xa;    ,&#x27;&#x2a;&#x2a;&#x2a; BETA &#x2a;&#x2a;&#x2a; UNDEFINED&#x27;    AS relationship_chain&#xd;&#xa;FROM auto_billing_staging.stg_cardconex_account&#xd;&#xa;ORDER BY acct_id&#xd;&#xa;&#x3b;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -2358,8 +1979,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>80</xloc>
-      <yloc>160</yloc>
+      <xloc>96</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2376,7 +1997,7 @@
       <schema_name/>
     </partitioning>
     <connection>SUW_SRVR_14</connection>
-    <sql>SELECT &#xd;&#xa;    cardconex_acct_id,&#xd;&#xa;    cardconex_acct_name,&#xd;&#xa;    account_start_date,&#xd;&#xa;    IF&#x28;SUM&#x28;flipped_count&#x29; &#x3e; 0, &#x27;YES&#x27;, &#x27;NO&#x27;&#x29; is_flipped,&#xd;&#xa;    -- LEAST&#x28;COALESCE&#x28;account_start_date, service_start_date&#x29;, COALESCE&#x28;service_start_date, account_start_date&#x29;&#x29; AS start_date&#xd;&#xa;    COALESCE&#x28;LEAST&#x28;COALESCE&#x28;account_start_date, service_start_date&#x29;, COALESCE&#x28;service_start_date, account_start_date&#x29;&#x29;, &#x27;2000-01-01 00&#x3a;00&#x3a;00&#x27;&#x29; AS start_date&#xd;&#xa;FROM&#xd;&#xa;    &#x28;SELECT &#xd;&#xa;        a.acct_id cardconex_acct_id,&#xd;&#xa;            a.acct_name cardconex_acct_name,&#xd;&#xa;            IF&#x28;a.bluefin_contract_start_date &#x3d; &#x27;&#x27;, &#x27;2000-01-01&#x27;, a.bluefin_contract_start_date&#x29; account_start_date,&#xd;&#xa;            IF&#x28;s.new_existing_account_type IN &#x28;&#x27;Flipped Account&#x27; , &#x27;Concord Conversion&#x27;&#x29;, 1, 0&#x29; flipped_count,&#xd;&#xa;            IF&#x28;s.startdate &#x3d; &#x27;&#x27;, NULL, s.startdate&#x29; service_start_date&#xd;&#xa;    FROM&#xd;&#xa;        auto_billing_staging.stg_cardconex_account a&#xd;&#xa;    LEFT JOIN auto_billing_staging.stg_cardconex_service s ON s.accountid &#x3d; a.acct_id&#xd;&#xa;    ORDER BY 1 , 5 ASC&#xd;&#xa;    LIMIT 18446744073709551615&#x29; cc&#xd;&#xa;GROUP BY 1&#xd;&#xa;ORDER BY 1</sql>
+    <sql>SELECT &#xd;&#xa;    cardconex_acct_id,&#xd;&#xa;    cardconex_acct_name,&#xd;&#xa;    account_start_date,&#xd;&#xa;    IF&#x28;SUM&#x28;flipped_count&#x29; &#x3e; 0, &#x27;YES&#x27;, &#x27;NO&#x27;&#x29; is_flipped,&#xd;&#xa;    -- LEAST&#x28;COALESCE&#x28;account_start_date, service_start_date&#x29;, COALESCE&#x28;service_start_date, account_start_date&#x29;&#x29; AS start_date&#xd;&#xa;    COALESCE&#x28;LEAST&#x28;COALESCE&#x28;account_start_date, service_start_date&#x29;, COALESCE&#x28;service_start_date, account_start_date&#x29;&#x29;, &#x27;2000-01-01&#x27;&#x29; AS start_date&#xd;&#xa;FROM&#xd;&#xa;    &#x28;SELECT &#xd;&#xa;        a.acct_id cardconex_acct_id,&#xd;&#xa;            a.acct_name cardconex_acct_name,&#xd;&#xa;            IF&#x28;a.bluefin_contract_start_date &#x3d; &#x27;&#x27;, &#x27;2000-01-01&#x27;, a.bluefin_contract_start_date&#x29; account_start_date,&#xd;&#xa;            IF&#x28;s.new_existing_account_type IN &#x28;&#x27;Flipped Account&#x27; , &#x27;Concord Conversion&#x27;&#x29;, 1, 0&#x29; flipped_count,&#xd;&#xa;            IF&#x28;s.startdate &#x3d; &#x27;&#x27;, NULL, s.startdate&#x29; service_start_date&#xd;&#xa;    FROM&#xd;&#xa;        auto_billing_staging.stg_cardconex_account a&#xd;&#xa;    LEFT JOIN auto_billing_staging.stg_cardconex_service s ON s.accountid &#x3d; a.acct_id&#xd;&#xa;    ORDER BY 1 , 5 ASC&#xd;&#xa;    LIMIT 18446744073709551615&#x29; cc&#xd;&#xa;GROUP BY 1&#xd;&#xa;ORDER BY 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -2390,8 +2011,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
-      <yloc>272</yloc>
+      <xloc>368</xloc>
+      <yloc>560</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2432,8 +2053,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>336</xloc>
-      <yloc>160</yloc>
+      <xloc>368</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2472,282 +2093,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>672</xloc>
-      <yloc>160</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>debug_05</name>
-    <type>TextFileOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <separator>&#x3b;</separator>
-    <enclosure>&#x22;</enclosure>
-    <enclosure_forced>N</enclosure_forced>
-    <enclosure_fix_disabled>N</enclosure_fix_disabled>
-    <header>Y</header>
-    <footer>N</footer>
-    <format>DOS</format>
-    <compression>None</compression>
-    <encoding/>
-    <endedLine/>
-    <fileNameInField>N</fileNameInField>
-    <fileNameField/>
-    <create_parent_folder>Y</create_parent_folder>
-    <file>
-      <name>D&#x3a;&#x5c;temp&#x5c;debug_05</name>
-      <is_command>N</is_command>
-      <servlet_output>N</servlet_output>
-      <do_not_open_new_file_init>N</do_not_open_new_file_init>
-      <extention>txt</extention>
-      <append>N</append>
-      <split>N</split>
-      <haspartno>N</haspartno>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
-      <add_to_result_filenames>Y</add_to_result_filenames>
-      <pad>N</pad>
-      <fast_dump>N</fast_dump>
-      <splitevery>0</splitevery>
-    </file>
-    <fields>
-      <field>
-        <name>acct_id</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>acct_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_city</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_state</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_postal_code</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>dba_phone</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mid_5</name>
-        <type>Integer</type>
-        <format>0</format>
-        <currency/>
-        <decimal>.</decimal>
-        <group>,</group>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>accountnumber</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_code</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>industry</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>referring_organization_text</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>segment</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>chain</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>relationship_chain</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_desc</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>mcc_group</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-      <field>
-        <name>start_date</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <trim_type>both</trim_type>
-        <length>-1</length>
-        <precision>-1</precision>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>432</xloc>
-      <yloc>272</yloc>
+      <xloc>704</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

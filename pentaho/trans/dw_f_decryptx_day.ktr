@@ -445,27 +445,6 @@
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>Fact Table f_decryptx_day&#xd;&#xa;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#x3d;&#xd;&#xa;This transformation loads data into the Fact table.&#xd;&#xa;-- Extract data from staging tables with volume&#xd;&#xa;-- Filter cardconex records with a cardconex_acct_id for lookup&#xd;&#xa;	-- If no match in lookup FAIL TRANSFORMATION&#xd;&#xa;-- Lookup &#x2f; Update decryptx records where cardconex_acct_id is null&#xd;&#xa;	-- If not match insert record </note>
-      <xloc>32</xloc>
-      <yloc>432</yloc>
-      <width>551</width>
-      <heigth>202</heigth>
-      <fontname>Segoe UI</fontname>
-      <fontsize>9</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>0</backgroundcolorred>
-      <backgroundcolorgreen>255</backgroundcolorgreen>
-      <backgroundcolorblue>64</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
@@ -497,82 +476,82 @@
   <order>
     <hop>
       <from>stg_p2pe_device</from>
-      <to>Filter rows</to>
+      <to>filter_cardconex_acct_id_is_null</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get Report_Date</from>
-      <to>Format report_date</to>
+      <from>get_report_date</from>
+      <to>format_report_date</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Format report_date</from>
-      <to>d_day lookup</to>
+      <from>format_report_date</from>
+      <to>d_day_lookup</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>If field value is null</from>
-      <to>Final Fields</to>
+      <from>replace_device_key_merchant_key_null_values</from>
+      <to>select_values_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Final Fields</from>
-      <to>Add constants</to>
+      <from>select_values_01</from>
+      <to>add_constants</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>d_merchant CCid Exists</from>
-      <to>Pass &#x2f; Fail</to>
+      <from>update_d_merchant_cc_acct_id_not_null</from>
+      <to>filter_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>d_merchant CCid NOT Exists</from>
-      <to>Get Report_Date</to>
+      <from>update_d_merchant_null_cc_acct_id</from>
+      <to>get_report_date</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Pass &#x2f; Fail</from>
-      <to>Get Report_Date</to>
+      <from>filter_01</from>
+      <to>get_report_date</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Add constants</from>
-      <to>f_decryptx_day</to>
+      <from>add_constants</from>
+      <to>populate_f_decryptx_day_alt</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>d_day lookup</from>
+      <from>d_day_lookup</from>
       <to>d_device</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>d_device</from>
-      <to>If field value is null</to>
+      <to>replace_device_key_merchant_key_null_values</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Generate Rows</from>
-      <to>Block this step until steps finish</to>
+      <from>generate_rows</from>
+      <to>block_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Block this step until steps finish</from>
-      <to>Execute SQL script</to>
+      <from>block_01</from>
+      <to>populate_f_decryptx_day</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>d_merchant CCid NOT Exists</to>
+      <from>filter_cardconex_acct_id_is_null</from>
+      <to>update_d_merchant_null_cc_acct_id</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows</from>
-      <to>d_merchant CCid Exists</to>
+      <from>filter_cardconex_acct_id_is_null</from>
+      <to>update_d_merchant_cc_acct_id_not_null</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Add constants</name>
+    <name>add_constants</name>
     <type>Constant</type>
     <description/>
     <distribute>N</distribute>
@@ -616,14 +595,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1024</xloc>
+      <xloc>1248</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Block this step until steps finish</name>
+    <name>block_01</name>
     <type>BlockUntilStepsFinish</type>
     <description/>
     <distribute>Y</distribute>
@@ -635,7 +614,7 @@
     </partitioning>
     <steps>
       <step>
-        <name>f_decryptx_day</name>
+        <name>populate_f_decryptx_day_alt</name>
         <CopyNr>0</CopyNr>
         </step>
       </steps>
@@ -647,350 +626,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>336</yloc>
+      <xloc>224</xloc>
+      <yloc>320</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Execute SQL script</name>
-    <type>ExecSQL</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>SUW_SRVR_14</connection>
-    <execute_each_row>Y</execute_each_row>
-    <single_statement>N</single_statement>
-    <replace_variables>N</replace_variables>
-    <quoteString>N</quoteString>
-    <sql>TRUNCATE TABLE auto_billing_dw.f_decryptx_day&#x3b;&#xd;&#xa;INSERT INTO auto_billing_dw.f_decryptx_day SELECT &#x2a; FROM auto_billing_dw.f_decryptx_day_alt&#x3b;</sql>
-    <set_params>N</set_params>
-    <insert_field/>
-    <update_field/>
-    <delete_field/>
-    <read_field/>
-    <arguments>
-    </arguments>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>368</xloc>
-      <yloc>336</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Filter rows</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-<send_true_to>d_merchant CCid NOT Exists</send_true_to>
-<send_false_to>d_merchant CCid Exists</send_false_to>
-    <compare>
-<condition>
- <negated>N</negated>
- <leftvalue>cardconex_acct_id</leftvalue>
- <function>IS NULL</function>
- <rightvalue/>
- </condition>
-    </compare>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>160</xloc>
-      <yloc>16</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Final Fields</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>      <field>        <name>day_key</name>
-      </field>      <field>        <name>merchant_key</name>
-      </field>      <field>        <name>device_key</name>
-      </field>      <field>        <name>decryptx_acct_id</name>
-      </field>      <field>        <name>decryption_count</name>
-      </field>      <field>        <name>decryptions_mtd</name>
-      </field>      <field>        <name>decryptions_ytd</name>
-      </field>        <select_unspecified>N</select_unspecified>
-    </fields>    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>912</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Format report_date</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>        <select_unspecified>N</select_unspecified>
-      <meta>        <name>report_date</name>
-        <rename>report_date</rename>
-        <type>Date</type>
-        <length>-2</length>
-        <precision>-2</precision>
-        <conversion_mask>yyyy-MM-dd</conversion_mask>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>    </fields>    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>448</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Generate Rows</name>
-    <type>RowGenerator</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>dummy_row</name>
-        <type>Number</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>1</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-    <limit>1</limit>
-    <never_ending>N</never_ending>
-    <interval_in_ms>5000</interval_in_ms>
-    <row_time_field>now</row_time_field>
-    <last_time_field>FiveSecondsAgo</last_time_field>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>48</xloc>
-      <yloc>336</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Get Report_Date</name>
-    <type>RegexEval</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <script><![CDATA[.*(\d{4}-\d{2}-\d{2}).*]]></script>    <matcher>source_file</matcher>
-    <resultfieldname/>
-    <usevar>N</usevar>
-    <allowcapturegroups>Y</allowcapturegroups>
-    <replacefields>N</replacefields>
-    <canoneq>N</canoneq>
-    <caseinsensitive>N</caseinsensitive>
-    <comment>N</comment>
-    <dotall>N</dotall>
-    <multiline>N</multiline>
-    <unicode>N</unicode>
-    <unix>N</unix>
-    <fields>
-      <field>
-        <name>report_date</name>
-        <type>String</type>
-        <format/>
-        <group/>
-        <decimal/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <nullif/>
-        <ifnull/>
-        <trimtype>none</trimtype>
-        <currency/>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>304</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>If field value is null</name>
-    <type>IfNull</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-      <replaceAllByValue/>
-      <replaceAllMask/>
-      <selectFields>Y</selectFields>
-      <selectValuesType>N</selectValuesType>
-      <setEmptyStringAll>N</setEmptyStringAll>
-    <valuetypes>
-      </valuetypes>
-    <fields>
-      <field>
-        <name>device_key</name>
-        <value>1</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-        </field>
-      <field>
-        <name>merchant_key</name>
-        <value>1</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-        </field>
-      </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>784</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Pass &#x2f; Fail</name>
-    <type>FilterRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-<send_true_to>Get Report_Date</send_true_to>
-<send_false_to>Text file output</send_false_to>
-    <compare>
-<condition>
- <negated>N</negated>
- <conditions>
-  <condition>
-   <negated>N</negated>
-   <leftvalue>merchant_key</leftvalue>
-   <function>IS NOT NULL</function>
-   <rightvalue/>
-   </condition>
-  <condition>
-   <negated>N</negated>
-   <operator>AND</operator>
-   <leftvalue>merchant_key</leftvalue>
-   <function>&#x3e;</function>
-   <rightvalue/>
-   <value><name>constant</name><type>Integer</type><text>0</text><length>-1</length><precision>0</precision><isnull>N</isnull><mask>&#x23;&#x3b;-&#x23;</mask></value>   </condition>
-  </conditions>
- </condition>
-    </compare>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>304</xloc>
-      <yloc>96</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>d_day lookup</name>
+    <name>d_day_lookup</name>
     <type>DBLookup</type>
     <description/>
     <distribute>Y</distribute>
@@ -1031,7 +674,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
+      <xloc>672</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1041,7 +684,7 @@
     <name>d_device</name>
     <type>DimensionLookup</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -1118,14 +761,426 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>672</xloc>
+      <xloc>768</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>d_merchant CCid Exists</name>
+    <name>filter_01</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+<send_true_to>get_report_date</send_true_to>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <leftvalue>merchant_key</leftvalue>
+   <function>IS NOT NULL</function>
+   <rightvalue/>
+   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND</operator>
+   <leftvalue>merchant_key</leftvalue>
+   <function>&#x3e;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>Integer</type><text>0</text><length>-1</length><precision>0</precision><isnull>N</isnull><mask>&#x23;&#x3b;-&#x23;</mask></value>   </condition>
+  </conditions>
+ </condition>
+    </compare>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>filter_cardconex_acct_id_is_null</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+<send_true_to>update_d_merchant_null_cc_acct_id</send_true_to>
+<send_false_to>update_d_merchant_cc_acct_id_not_null</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>cardconex_acct_id</leftvalue>
+ <function>IS NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>16</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>format_report_date</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>report_date</name>
+        <rename>report_date</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM-dd</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>528</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>generate_rows</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>dummy_row</name>
+        <type>Number</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <limit>1</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>get_report_date</name>
+    <type>RegexEval</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <script><![CDATA[.*(\d{4}-\d{2}-\d{2}).*]]></script>    <matcher>source_file</matcher>
+    <resultfieldname/>
+    <usevar>N</usevar>
+    <allowcapturegroups>Y</allowcapturegroups>
+    <replacefields>N</replacefields>
+    <canoneq>N</canoneq>
+    <caseinsensitive>N</caseinsensitive>
+    <comment>N</comment>
+    <dotall>N</dotall>
+    <multiline>N</multiline>
+    <unicode>N</unicode>
+    <unix>N</unix>
+    <fields>
+      <field>
+        <name>report_date</name>
+        <type>String</type>
+        <format/>
+        <group/>
+        <decimal/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <nullif/>
+        <ifnull/>
+        <trimtype>none</trimtype>
+        <currency/>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>populate_f_decryptx_day</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>TRUNCATE TABLE auto_billing_dw.f_decryptx_day&#x3b;&#xd;&#xa;INSERT INTO auto_billing_dw.f_decryptx_day SELECT &#x2a; FROM auto_billing_dw.f_decryptx_day_alt&#x3b;&#xd;&#xa;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>populate_f_decryptx_day_alt</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
+    <table>&#x24;&#x7b;dest_table&#x7d;</table>
+    <commit>100</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1392</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>replace_device_key_merchant_key_null_values</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>Y</selectFields>
+      <selectValuesType>N</selectValuesType>
+      <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>device_key</name>
+        <value>1</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>merchant_key</name>
+        <value>1</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>960</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_01</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>day_key</name>
+      </field>      <field>        <name>merchant_key</name>
+      </field>      <field>        <name>device_key</name>
+      </field>      <field>        <name>decryptx_acct_id</name>
+      </field>      <field>        <name>decryption_count</name>
+      </field>      <field>        <name>decryptions_mtd</name>
+      </field>      <field>        <name>decryptions_ytd</name>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1136</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>stg_p2pe_device</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <sql>&#xd;&#xa;SELECT COALESCE&#x28;ddm.cardconex_acct_id,&#xd;&#xa;                m.cardconex_acct_id&#x29;   AS cardconex_acct_id,&#xd;&#xa;       d.custodian_id                  AS decryptx_acct_id,&#xd;&#xa;       d.custodian_name                AS custodian,&#xd;&#xa;&#x23;       d.custodian_name               AS decryptx_acct_name,&#xd;&#xa;&#x23;       partner_root_id,&#xd;&#xa;&#x23;       partner_root_name,&#xd;&#xa;&#x23;       partner_direct_id,&#xd;&#xa;&#x23;       partner_direct_name,&#xd;&#xa;       d.poi_device_id,&#xd;&#xa;       d.poi_serial_number,&#xd;&#xa;       dd.manufacturer_name,&#xd;&#xa;       dd.product_name,&#xd;&#xa;       dd.hardware_version,&#xd;&#xa;       d.state,&#xd;&#xa;       d.decryptions_mtd               AS decryption_count,    -- was originally d.decryption_count but because we are looking only at the last day of the month, decryption_count &#x3d; decryptions_mtd&#xd;&#xa;       d.decryptions_mtd,&#xd;&#xa;       d.decryptions_ytd,&#xd;&#xa;       d.source_file&#xd;&#xa;FROM auto_billing_staging.decryptx_device_day d                                   -- was originally FROM auto_billing_staging.stg_p2pe_device d&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_decryptx_device_cardconex_map ddm&#xd;&#xa;  ON ddm.decryptx_device_id &#x3d; d.poi_device_id&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_decryptx_cardconex_map m&#xd;&#xa;  ON m.decryptx_acct_id &#x3d; d.custodian_id&#xd;&#xa;-- LEFT JOIN stg_device_detail dd&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_device_detail dd                               -- was originally LEFT JOIN ods.decryptx_device_detail dd&#xd;&#xa;  ON dd.device_id &#x3d; d.poi_device_id&#xd;&#xa;WHERE true&#xd;&#xa;  AND report_date &#x3d; date_format&#x28;current_date, &#x27;&#x25;Y-&#x25;m-01&#x27;&#x29; - INTERVAL 1 DAY&#xd;&#xa;ORDER BY d.source_file, d.source_row</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>48</xloc>
+      <yloc>16</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>update_d_merchant_cc_acct_id_not_null</name>
     <type>DimensionLookup</type>
     <description/>
     <distribute>Y</distribute>
@@ -1185,14 +1240,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>304</xloc>
+      <xloc>416</xloc>
       <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>d_merchant CCid NOT Exists</name>
+    <name>update_d_merchant_null_cc_acct_id</name>
     <type>DimensionLookup</type>
     <description/>
     <distribute>Y</distribute>
@@ -1247,84 +1302,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
+      <xloc>208</xloc>
       <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>f_decryptx_day</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>SUW_SRVR_14</connection>
-    <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
-    <table>&#x24;&#x7b;dest_table&#x7d;</table>
-    <commit>100</commit>
-    <truncate>Y</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>N</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1152</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>stg_p2pe_device</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>SUW_SRVR_14</connection>
-    <sql>&#xd;&#xa;SELECT COALESCE&#x28;ddm.cardconex_acct_id,&#xd;&#xa;                m.cardconex_acct_id&#x29;   AS cardconex_acct_id,&#xd;&#xa;       d.custodian_id                  AS decryptx_acct_id,&#xd;&#xa;       d.custodian_name                AS custodian,&#xd;&#xa;&#x23;       d.custodian_name               AS decryptx_acct_name,&#xd;&#xa;&#x23;       partner_root_id,&#xd;&#xa;&#x23;       partner_root_name,&#xd;&#xa;&#x23;       partner_direct_id,&#xd;&#xa;&#x23;       partner_direct_name,&#xd;&#xa;       d.poi_device_id,&#xd;&#xa;       d.poi_serial_number,&#xd;&#xa;       dd.manufacturer_name,&#xd;&#xa;       dd.product_name,&#xd;&#xa;       dd.hardware_version,&#xd;&#xa;       d.state,&#xd;&#xa;       d.decryptions_mtd               AS decryption_count,    -- was originally d.decryption_count but because we are looking only at the last day of the month, decryption_count &#x3d; decryptions_mtd&#xd;&#xa;       d.decryptions_mtd,&#xd;&#xa;       d.decryptions_ytd,&#xd;&#xa;       d.source_file&#xd;&#xa;FROM auto_billing_staging.decryptx_device_day d                                   -- was originally FROM auto_billing_staging.stg_p2pe_device d&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_decryptx_device_cardconex_map ddm&#xd;&#xa;  ON ddm.decryptx_device_id &#x3d; d.poi_device_id&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_decryptx_cardconex_map m&#xd;&#xa;  ON m.decryptx_acct_id &#x3d; d.custodian_id&#xd;&#xa;-- LEFT JOIN stg_device_detail dd&#xd;&#xa;LEFT JOIN auto_billing_staging.stg_device_detail dd                               -- was originally LEFT JOIN ods.decryptx_device_detail dd&#xd;&#xa;  ON dd.device_id &#x3d; d.poi_device_id&#xd;&#xa;WHERE true&#xd;&#xa;  AND report_date &#x3d; date_format&#x28;current_date, &#x27;&#x25;Y-&#x25;m-01&#x27;&#x29; - INTERVAL 1 DAY&#xd;&#xa;ORDER BY d.source_file, d.source_row</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>48</xloc>
-      <yloc>16</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
