@@ -7,77 +7,35 @@ echo
 echo Usage Notes
 echo -----------
 echo The script must be executed while logged in as the svc-dbwh user.
-echo The script assumes you are creating the output for the previous month.  It will not work for other reporting period.
-echo Existing input files will be moved to the ~/dir_done_default directory before new ones are created.
+echo The script assumes you are creating the output for the previous month.  It will not work for other reporting periods.
 echo You should monitor the contents of the ~/dir_errors_default and ~/logs directory.
 echo 
 
-echo Confirm that all required input files have been stored in ~/dir_source_default.
-echo -------------------------------------------------------------------------------
-if [ -f ~/dir_source_default/ods_site.sql ]; then
-   echo PRESENT ods_site.sql file
-else
-   echo MISSING ods_site.sql file
-fi
+echo Confirm that CURRENT VERSIONS of the three map files are present:
+echo -----------------------------------------------------------------
+ls -lt ~/dir_source_default/*map*
 
-if [ -f ~/dir_source_default/decryptx_cardconex_map*.xlsx ]; then
-   echo PRESENT decryptx_cardconex_map*.xlsx file
-else
-   echo MISSING decryptx_cardconex_map*.xlsx file
-fi
-
-if [ -f ~/dir_source_default/decryptx_cardconex_map*.xlsx ]; then
-   echo PRESENT decryptx_device_cardconex_map*.xlsx file
-else
-   echo MISSING decryptx_device_cardconex_map*.xlsx file
-fi
-
-if [ -f ~/dir_source_default/payconex_cardconex_map*.xlsx ]; then
-   echo PRESENT payconex_cardconex_map*.xlsx file
-else
-   echo MISSING payconex_cardconex_map*.xlsx file
-fi
 echo
-
+echo Stop here if any of the map files are missing or out-of-date.
+echo
 read -p "press enter to continue..."
-
-echo
 
 echo Make sure the tables below have been updated:
 mysql -e"CALL check_prerequisites()" auto_billing_staging
 echo 
 
 read -p "press enter to run src_cardconex_account.ktr..."
+
 # ########## Account ##################################################################################################
-# Input File:    cardconex_account.YYYYMMDD_YYMMSS.csv          
+# 1 Jun 2020:  Clean up the comments where next month.
 # Output Table:  auto_billing_staging.stg_cardconex_account
-if [ -f ~/dir_source_default/cardconex_account*.csv ]; then 
-   mv ~/dir_source_default/cardconex_account* ~/dir_done_default/
-fi
-echo Creating cardconex_account.YYYYMMDD_YYMMSS.csv file...
-/usr/local/rvm/wrappers/ruby-2.4.0/ruby /home/svc-dbwh/scripts/cardconex_fetch.rb -tAccount         -k -o /home/svc-dbwh/dir_source_default/
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
+
+cd /home/svc-dbwh/repositories/sales_force/pentaho/trans/
+/usr/local/install/data-integration/pan.sh -file src_cardconex_account_2.ktr
+
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_cardconex_account; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file src_cardconex_account.ktr
-read -p "press enter to run src_cardconex_servicecontract.ktr..."
+mysql -v -v -e"INSERT INTO auto_billing_staging.stg_cardconex_account SELECT * FROM sales_force.test_cardconex_account"
 
-# ########## Service Contract #########################################################################################
-# Input File:    cardconex_servicecontract_YYYYMMDD_HHMMSS.csv
-# Output Table:  auto_billing_staging.stg_cardconex_service
-if [ -f ~/dir_source_default/cardconex_servicecontract*.csv ]; then 
-   mv ~/dir_source_default/cardconex_servicecontract* ~/dir_done_default/
-fi
-echo Creating cardconex_servicecontract_YYYYMMDD_HHMMSS.csv file...
-/usr/local/rvm/wrappers/ruby-2.4.0/ruby /home/svc-dbwh/scripts/cardconex_fetch.rb -tServiceContract -k -o /home/svc-dbwh/dir_source_default/
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_cardconex_service; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file src_cardconex_servicecontract.ktr
-read -p "press enter to run importing site table..."
-
-# ########## Site #####################################################################################################
-# Input File:    ods_site.sql (mysqldump file)
-# Output Table:  auto_billing_staging.site ('truncated' via restore of mysqldump file)
-mysql -u data_warehouse auto_billing_staging < ~/dir_source_default/ods_site.sql
 read -p "press enter to run src_decryptx_cardconex_map.ktr..."
 
 # ########## Decryptx Cardconex Map ###################################################################################
@@ -286,5 +244,6 @@ FROM auto_billing_dw.f_auto_billing_complete\G" auto_billing_dw
 
 read -p "press enter to continue..."
 
-echo Remember to execute stored procedure auto_billing_history.update_history()
+echo Remember to update the history tables via update_history.ktr.
+echo To delete data in all history tables for period my_period (YYYY-DD-01):  CALL delete_history(my_period);
 
