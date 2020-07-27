@@ -469,10 +469,10 @@
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
-    <server>suw-srvr-14</server>
+    <server>suw-srvr-14.capitalpayments.local</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>auto_billing_staging</database>
+    <database>information_schema</database>
     <port>3306</port>
     <username>data_warehouse</username>
     <password>Encrypted 2be98afc86aa79088be1ca879d0adabcd</password>
@@ -496,23 +496,28 @@
   </connection>
   <order>
     <hop>
-      <from>add_constants</from>
-      <to>populate_payconex_volume_day</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>read_input_file</from>
       <to>add_constants</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>define_filename_prefix_and_suffix</from>
+      <from>derive_filename</from>
+      <to>read_input_file</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>generate_rows</from>
       <to>derive_filename</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>derive_filename</from>
-      <to>read_input_file</to>
+      <from>add_constants</from>
+      <to>replace_null_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>replace_null_01</from>
+      <to>populate_payconex_volume_day</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -561,63 +566,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>208</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>define_filename_prefix_and_suffix</name>
-    <type>RowGenerator</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>prefix</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>&#x2f;transfer2&#x2f;receiving&#x2f;payconex&#x2f;volume_report_</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>suffix</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>.tsv</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-    <limit>1</limit>
-    <never_ending>N</never_ending>
-    <interval_in_ms>5000</interval_in_ms>
-    <row_time_field>now</row_time_field>
-    <last_time_field>FiveSecondsAgo</last_time_field>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>176</xloc>
+      <xloc>480</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -638,7 +587,7 @@
     <optimizationLevel>9</optimizationLevel>
     <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
         <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>&#x2f;&#x2a;&#xd;&#xa;   objective&#x3a;  calculate a filename which as a prefix, date component, and suffix&#xd;&#xa;               where the prefix and suffix are constants,&#xd;&#xa;               and the date component is a date of the format YYYY-MM-DD &#xd;&#xa;               and equal to the date of the previous day - relative to the current date.&#xd;&#xa;&#xd;&#xa;   example&#x3a;    suppose today&#x27;s date is 2020-03-20.  &#xd;&#xa;               the filename  we want is P2PE_device_report_2020-03-19.tsv.&#xd;&#xa;               &#xd;&#xa;               in this example, prefix &#x3d; &#x27;P2PE_device_report_&#x27; and suffix &#x3d; &#x27;tsv&#x27;.&#xd;&#xa;&#xd;&#xa;               the date component is yesterday&#x27;s date - relative to the current date.  &#xd;&#xa;&#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var yesterday &#x3d; new Date&#x28;&#x29;&#x3b;                                 &#x2f;&#x2a; set yesterday &#x3d; today&#x27;s date               &#x2a;&#x2f;&#xd;&#xa;yesterday.setDate&#x28;yesterday.getDate&#x28;&#x29; - 1&#x29;&#x3b;                 &#x2f;&#x2a; subtract one day to get yesterday&#x27;s date   &#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var file_name &#x3d; prefix                                      &#x2f;&#x2a; format the date the way we want it         &#x2a;&#x2f;&#xd;&#xa;               .concat&#x28;date2str&#x28;yesterday, &#x27;yyyy-MM-dd&#x27;&#x29;&#x29;&#xd;&#xa;               .concat&#x28;suffix&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
+        <jsScript_script>&#x2f;&#x2a;&#xd;&#xa;   objective&#x3a;  derive the correct input filename.&#xa;               the filename is of the format P2PE_device_report_YYYY-MM-DD.tsv&#xa;               where YYYY-MM-DD represents yesterday&#x27;s date.&#xa;&#xd;&#xa;   example&#x3a;    suppose today&#x27;s date is 2020-03-20.  &#xd;&#xa;               the filename  we want is P2PE_device_report_2020-03-19.tsv.&#xa;&#xd;&#xa;&#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var yesterday &#x3d; new Date&#x28;&#x29;&#x3b;                                 &#x2f;&#x2a; set yesterday &#x3d; today&#x27;s date               &#x2a;&#x2f;&#xd;&#xa;yesterday.setDate&#x28;yesterday.getDate&#x28;&#x29; - 1&#x29;&#x3b;                 &#x2f;&#x2a; subtract one day to get yesterday&#x27;s date   &#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var file_name &#x3d; getVariable&#x28;&#x27;etl_xfer&#x27;, &#x27;&#x27;&#x29;						&#xa;               .concat&#x28;&#x27;receiving&#x2f;payconex&#x2f;volume_report_&#x27;&#x29;&#xa;               .concat&#x28;date2str&#x28;yesterday, &#x27;yyyy-MM-dd&#x27;&#x29;&#x29;&#xa;               .concat&#x28;&#x27;.tsv&#x27;&#x29;&#x3b;&#xa;</jsScript_script>
       </jsScript>    </jsScripts>    <fields>      <field>        <name>file_name</name>
         <rename>file_name</rename>
         <type>String</type>
@@ -653,7 +602,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
+      <xloc>208</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
@@ -689,136 +638,16 @@
     <return_field/>
     <fields>
         <field>
-          <column_name>mid</column_name>
-          <stream_name>MID</stream_name>
-        </field>
-        <field>
-          <column_name>poi_accesskey</column_name>
-          <stream_name>POI_Accesskey</stream_name>
-        </field>
-        <field>
-          <column_name>user_count</column_name>
-          <stream_name>User_Count</stream_name>
-        </field>
-        <field>
-          <column_name>group_count</column_name>
-          <stream_name>Group_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_batches</column_name>
-          <stream_name>CC_Batches</stream_name>
-        </field>
-        <field>
-          <column_name>ach_batches</column_name>
-          <stream_name>ACH_Batches</stream_name>
-        </field>
-        <field>
-          <column_name>ach_returns</column_name>
-          <stream_name>ACH_Returns</stream_name>
-        </field>
-        <field>
-          <column_name>ach_errors</column_name>
-          <stream_name>ACH_Errors</stream_name>
-        </field>
-        <field>
-          <column_name>ach_noc_messages</column_name>
-          <stream_name>ACH_NOC_messages</stream_name>
-        </field>
-        <field>
-          <column_name>reissued_cc_transactions</column_name>
-          <stream_name>Reissued_CC_Transactions</stream_name>
-        </field>
-        <field>
-          <column_name>reissued_ach_transactions</column_name>
-          <stream_name>Reissued_ACH_Transactions</stream_name>
-        </field>
-        <field>
           <column_name>acct_id</column_name>
           <stream_name>PayConex_Account_Number</stream_name>
-        </field>
-        <field>
-          <column_name>tx_acct_id</column_name>
-          <stream_name>TX_Account_Number</stream_name>
         </field>
         <field>
           <column_name>acct_name</column_name>
           <stream_name>Account_Name</stream_name>
         </field>
         <field>
-          <column_name>source_file</column_name>
-          <stream_name>source_file</stream_name>
-        </field>
-        <field>
-          <column_name>source_row</column_name>
-          <stream_name>source_row</stream_name>
-        </field>
-        <field>
-          <column_name>processor</column_name>
-          <stream_name>CC_Processor</stream_name>
-        </field>
-        <field>
-          <column_name>cc_auth_trans</column_name>
-          <stream_name>CC_Authorization_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_auth_vol</column_name>
-          <stream_name>CC_Authorization_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>cc_sale_trans</column_name>
-          <stream_name>CC_Sale_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_sale_vol</column_name>
-          <stream_name>CC_Sale_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>cc_ref_trans</column_name>
-          <stream_name>CC_Refund_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_ref_vol</column_name>
-          <stream_name>CC_Refund_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>cc_credit_trans</column_name>
-          <stream_name>CC_Credit_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_credit_vol</column_name>
-          <stream_name>CC_Credit_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>cc_sale_decline_trans</column_name>
-          <stream_name>CC_Sale_Decline_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_auth_decline_trans</column_name>
-          <stream_name>CC_Auth_Decline_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_keyed_trans</column_name>
-          <stream_name>CC_Keyed_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_keyed_vol</column_name>
-          <stream_name>CC_Keyed_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>cc_swiped_trans</column_name>
-          <stream_name>CC_Swiped_Count</stream_name>
-        </field>
-        <field>
-          <column_name>cc_swiped_vol</column_name>
-          <stream_name>CC_Swiped_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>ach_sale_trans</column_name>
-          <stream_name>ACH_Sale_Count</stream_name>
-        </field>
-        <field>
-          <column_name>ach_sale_vol</column_name>
-          <stream_name>ACH_Sale_Volume</stream_name>
+          <column_name>ach_batches</column_name>
+          <stream_name>ACH_Batches</stream_name>
         </field>
         <field>
           <column_name>ach_credit_trans</column_name>
@@ -829,64 +658,48 @@
           <stream_name>ACH_Credit_Volume</stream_name>
         </field>
         <field>
-          <column_name>p2pe_auth_trans</column_name>
-          <stream_name>P2PE_Authorization_Count</stream_name>
+          <column_name>ach_errors</column_name>
+          <stream_name>ACH_Errors</stream_name>
         </field>
         <field>
-          <column_name>p2pe_auth_vol</column_name>
-          <stream_name>P2PE_Authorization_Volume</stream_name>
+          <column_name>ach_noc_messages</column_name>
+          <stream_name>ACH_NOC_messages</stream_name>
         </field>
         <field>
-          <column_name>p2pe_sale_trans</column_name>
-          <stream_name>P2PE_Sale_Count</stream_name>
+          <column_name>ach_returns</column_name>
+          <stream_name>ACH_Returns</stream_name>
         </field>
         <field>
-          <column_name>p2pe_sale_vol</column_name>
-          <stream_name>P2PE_Sale_Volume</stream_name>
+          <column_name>ach_sale_trans</column_name>
+          <stream_name>ACH_Sale_Count</stream_name>
         </field>
         <field>
-          <column_name>p2pe_refund_trans</column_name>
-          <stream_name>P2PE_Refund_Count</stream_name>
+          <column_name>ach_sale_vol</column_name>
+          <stream_name>ACH_Sale_Volume</stream_name>
         </field>
         <field>
-          <column_name>p2pe_refund_vol</column_name>
-          <stream_name>P2PE_Refund_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_credit_trans</column_name>
-          <stream_name>P2PE_Credit_Count</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_credit_vol</column_name>
-          <stream_name>P2PE_Credit_Volume</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_sale_decline_trans</column_name>
-          <stream_name>P2PE_Sale_Decline_Count</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_auth_decline_trans</column_name>
-          <stream_name>P2PE_Auth_Decline_Count</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_active_device_trans</column_name>
-          <stream_name>Active_P2PE_Device_Count</stream_name>
-        </field>
-        <field>
-          <column_name>p2pe_inactive_device_trans</column_name>
-          <stream_name>Non_Active_P2PE_Device_Count</stream_name>
-        </field>
-        <field>
-          <column_name>tokens_stored</column_name>
-          <stream_name>New_Tokens_Stored</stream_name>
+          <column_name>agents</column_name>
+          <stream_name>Agents</stream_name>
         </field>
         <field>
           <column_name>batch_files_processed</column_name>
           <stream_name>Bulk_Batch_Files_Processed</stream_name>
         </field>
         <field>
-          <column_name>report_date</column_name>
-          <stream_name>ReportDate</stream_name>
+          <column_name>cc_auth_decline_trans</column_name>
+          <stream_name>CC_Auth_Decline_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_auth_trans</column_name>
+          <stream_name>CC_Authorization_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_auth_vol</column_name>
+          <stream_name>CC_Authorization_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>cc_batches</column_name>
+          <stream_name>CC_Batches</stream_name>
         </field>
         <field>
           <column_name>cc_capture_trans</column_name>
@@ -897,6 +710,94 @@
           <stream_name>CC_Capture_Volume</stream_name>
         </field>
         <field>
+          <column_name>cc_credit_trans</column_name>
+          <stream_name>CC_Credit_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_credit_vol</column_name>
+          <stream_name>CC_Credit_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>cc_keyed_trans</column_name>
+          <stream_name>CC_Keyed_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_keyed_vol</column_name>
+          <stream_name>CC_Keyed_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>cc_ref_trans</column_name>
+          <stream_name>CC_Refund_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_ref_vol</column_name>
+          <stream_name>CC_Refund_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_decline_trans</column_name>
+          <stream_name>CC_Sale_Decline_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_trans</column_name>
+          <stream_name>CC_Sale_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_vol</column_name>
+          <stream_name>CC_Sale_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>cc_swiped_trans</column_name>
+          <stream_name>CC_Swiped_Count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_swiped_vol</column_name>
+          <stream_name>CC_Swiped_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>combined_decline_trans</column_name>
+          <stream_name>Combined_Decline_Count</stream_name>
+        </field>
+        <field>
+          <column_name>create_date</column_name>
+          <stream_name>Creation_Time</stream_name>
+        </field>
+        <field>
+          <column_name>date_created</column_name>
+          <stream_name>date_created</stream_name>
+        </field>
+        <field>
+          <column_name>date_updated</column_name>
+          <stream_name>date_updated</stream_name>
+        </field>
+        <field>
+          <column_name>decryptx</column_name>
+          <stream_name>decryptx</stream_name>
+        </field>
+        <field>
+          <column_name>group_count</column_name>
+          <stream_name>Group_Count</stream_name>
+        </field>
+        <field>
+          <column_name>mid</column_name>
+          <stream_name>MID</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_active_device_trans</column_name>
+          <stream_name>Active_P2PE_Device_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_decline_trans</column_name>
+          <stream_name>P2PE_Auth_Decline_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_trans</column_name>
+          <stream_name>P2PE_Authorization_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_vol</column_name>
+          <stream_name>P2PE_Authorization_Volume</stream_name>
+        </field>
+        <field>
           <column_name>p2pe_capture_trans</column_name>
           <stream_name>P2PE_Capture_Count</stream_name>
         </field>
@@ -905,28 +806,88 @@
           <stream_name>P2PE_Capture_Volume</stream_name>
         </field>
         <field>
-          <column_name>combined_decline_trans</column_name>
-          <stream_name>Combined_Decline_Count</stream_name>
+          <column_name>p2pe_credit_trans</column_name>
+          <stream_name>P2PE_Credit_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_credit_vol</column_name>
+          <stream_name>P2PE_Credit_Volume</stream_name>
         </field>
         <field>
           <column_name>p2pe_declined_trans</column_name>
           <stream_name>Combined_P2PE_Decline_Count</stream_name>
         </field>
         <field>
+          <column_name>p2pe_inactive_device_trans</column_name>
+          <stream_name>Non_Active_P2PE_Device_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_refund_trans</column_name>
+          <stream_name>P2PE_Refund_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_refund_vol</column_name>
+          <stream_name>P2PE_Refund_Volume</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_decline_trans</column_name>
+          <stream_name>P2PE_Sale_Decline_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_trans</column_name>
+          <stream_name>P2PE_Sale_Count</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_vol</column_name>
+          <stream_name>P2PE_Sale_Volume</stream_name>
+        </field>
+        <field>
           <column_name>p2pe_tokens_stored</column_name>
           <stream_name>New_P2PE_Tokens_Stored</stream_name>
         </field>
         <field>
-          <column_name>date_created</column_name>
-          <stream_name>date_created</stream_name>
+          <column_name>poi_accesskey</column_name>
+          <stream_name>POI_Accesskey</stream_name>
         </field>
         <field>
-          <column_name>create_date</column_name>
-          <stream_name>Creation_Time</stream_name>
+          <column_name>processor</column_name>
+          <stream_name>CC_Processor</stream_name>
         </field>
         <field>
-          <column_name>date_updated</column_name>
-          <stream_name>date_updated</stream_name>
+          <column_name>reissued_ach_transactions</column_name>
+          <stream_name>Reissued_ACH_Transactions</stream_name>
+        </field>
+        <field>
+          <column_name>reissued_cc_transactions</column_name>
+          <stream_name>Reissued_CC_Transactions</stream_name>
+        </field>
+        <field>
+          <column_name>report_date</column_name>
+          <stream_name>ReportDate</stream_name>
+        </field>
+        <field>
+          <column_name>source_file</column_name>
+          <stream_name>source_file</stream_name>
+        </field>
+        <field>
+          <column_name>account_status</column_name>
+          <stream_name>account_status</stream_name>
+        </field>
+        <field>
+          <column_name>source_row</column_name>
+          <stream_name>source_row</stream_name>
+        </field>
+        <field>
+          <column_name>tokens_stored</column_name>
+          <stream_name>New_Tokens_Stored</stream_name>
+        </field>
+        <field>
+          <column_name>tx_acct_id</column_name>
+          <stream_name>TX_Account_Number</stream_name>
+        </field>
+        <field>
+          <column_name>user_count</column_name>
+          <stream_name>User_Count</stream_name>
         </field>
     </fields>
     <cluster_schema/>
@@ -1847,6 +1808,36 @@
         <trim_type>none</trim_type>
         <repeat>N</repeat>
       </field>
+      <field>
+        <name>decryptx</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>account_status</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <ifnull/>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
     </fields>
     <limit>0</limit>
     <error_ignored>N</error_ignored>
@@ -1881,7 +1872,91 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
+      <xloc>352</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>generate_rows</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>row_no</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <limit>1</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>80</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>replace_null_01</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>Y</selectFields>
+      <selectValuesType>N</selectValuesType>
+      <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>Creation_Time</name>
+        <value>19700101</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>624</xloc>
       <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>

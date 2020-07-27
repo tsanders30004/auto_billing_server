@@ -456,11 +456,11 @@
   </info>
   <notepads>
     <notepad>
-      <note>This KTR imports the most recent &#x2f;transfer2&#x2f;receiving&#x2f;p2pe&#x2f;P2PE_device_report_YYYY-MM-DD.tsv&#xd;&#xa;file into auto_billing_staging.decryptx_device_day.&#xd;&#xa;&#xd;&#xa;The date embedded in the filename is always the date of the previous day - relative to the current date.&#xd;&#xa;The correct filename is derived in the derive_filename step.&#xd;&#xa;</note>
+      <note>This KTR imports the most recent &#x2f;transfer2&#x2f;receiving&#x2f;p2pe&#x2f;P2PE_device_report_YYYY-MM-DD.tsv&#xd;&#xa;file into auto_billing_staging.decryptx_device_day.&#xd;&#xa;&#xd;&#xa;The date embedded in the filename is always the date of the previous day - relative to the current date.&#xd;&#xa;The correct filename is derived in the derive_filename step.&#xd;&#xa;&#xa;23 Jul 2020&#xa;-----------&#xa;Lately there have been numerous cases in which a stray tab has been included in one or more columns in a row of the data file.&#xa;Since the file is tab-delimited, this causes teh import to fail.&#xa;The KTR has been updated to detect this condition and to write the offending records to an error file instead of trying to import the bad row.&#xa;&#xa;Algorithm&#x3a;&#xa;a.  A row should contain exactly 27 tab characters.  &#xa;b.  If a row has more than 27 tab characters then we will know that there is at least one stray tab in the file.&#xa;c.  The calculations step counts the number of tabs.&#xa;d.  The filter step &#x27;passes&#x27; only rows with 27 tabs&#x3b; the others are rejected and written to an error file.&#xa;</note>
       <xloc>16</xloc>
       <yloc>16</yloc>
-      <width>842</width>
-      <heigth>102</heigth>
+      <width>863</width>
+      <heigth>208</heigth>
       <fontname>Courier New</fontname>
       <fontsize>10</fontsize>
       <fontbold>N</fontbold>
@@ -479,10 +479,10 @@
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
-    <server>suw-srvr-14</server>
+    <server>suw-srvr-14.capitalpayments.local</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>auto_billing_staging</database>
+    <database>information_schema</database>
     <port>3306</port>
     <username>data_warehouse</username>
     <password>Encrypted 2be98afc86aa79088be1ca879d0adabcd</password>
@@ -506,18 +506,8 @@
   </connection>
   <order>
     <hop>
-      <from>add_constants</from>
-      <to>populate_decryptx_device_day</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>get_report_date</from>
       <to>add_constants</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>read_p2pe_device_rows</from>
-      <to>replace_invalid_hyphens_in_zip_code</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -526,13 +516,93 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>define_filename_prefix_and_suffix</from>
-      <to>derive_filename</to>
+      <from>define_filename_prefix_and_suffix_01</from>
+      <to>derive_filename_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>derive_filename</from>
-      <to>read_p2pe_device_rows</to>
+      <from>derive_filename_01</from>
+      <to>read_p2pe_device_rows_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>define_filename_prefix_and_suffix_02</from>
+      <to>derive_filename_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>calculations_01</from>
+      <to>filter_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>filter_01</from>
+      <to>select_values_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_01</from>
+      <to>sort_by_source_row_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>read_p2pe_device_rows_01</from>
+      <to>calculations_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_by_source_row_01</from>
+      <to>join_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_by_source_row_02</from>
+      <to>join_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>filter_01</from>
+      <to>select_values_for_error_file</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_for_error_file</from>
+      <to>write_error_file_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>derive_filename_02</from>
+      <to>read_p2pe_device_rows_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>read_p2pe_device_rows_02</from>
+      <to>select_values_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_02</from>
+      <to>replace_invalid_hyphens_in_zip_code</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>join_02</from>
+      <to>select_values_04</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_04</from>
+      <to>populate_decryptx_device_day</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>add_constants</from>
+      <to>replace_empty_string_with_null</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>replace_empty_string_with_null</from>
+      <to>sort_by_source_row_02</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -581,8 +651,275 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>176</yloc>
+      <xloc>896</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>calculations_01</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var first_tab_pos &#x3d; one_row.indexOf&#x28;&#x27;&#x5c;t&#x27;&#x29;&#x3b;               &#x2f;&#x2f; position of first tab char in one_row&#xa;var i&#x3b;&#xa;var num_tabs &#x3d; 0&#x3b;                                        &#x2f;&#x2f; number of tab characters appearing in one_row&#xa;var poi_device_id &#x3d; &#x27;&#x27;&#x3b;&#xa;&#xa;poi_device_id &#x3d; one_row.substring&#x28;0, first_tab_pos&#x29;&#x3b;     &#x2f;&#x2f; first &#x27;column&#x27; in one_row with column delimiter &#x3d; tab char&#xa;&#xa;for&#x28;i&#x3d;0&#x3b; i &#x3c; one_row.length&#x3b; i&#x2b;&#x2b;&#x29;&#x7b;&#xa;   if&#x28;one_row.charAt&#x28;i&#x29; &#x3d;&#x3d; &#x27;&#x5c;t&#x27;&#x29;&#x7b;&#xa;      num_tabs&#x2b;&#x2b;&#x3b;&#xa;   &#x7d;&#xa;&#x7d;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>first_tab_pos</name>
+        <rename>first_tab_pos</rename>
+        <type>Integer</type>
+        <length>9</length>
+        <precision>0</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>num_tabs</name>
+        <rename>num_tabs</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>poi_device_id</name>
+        <rename>poi_device_id</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>define_filename_prefix_and_suffix_01</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>prefix</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>&#x2f;transfer2&#x2f;receiving&#x2f;p2pe&#x2f;P2PE_device_report_</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>suffix</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>.tsv</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <limit>1</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>define_filename_prefix_and_suffix_02</name>
+    <type>RowGenerator</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>prefix</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>&#x2f;transfer2&#x2f;receiving&#x2f;p2pe&#x2f;P2PE_device_report_</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>suffix</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>.tsv</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <limit>1</limit>
+    <never_ending>N</never_ending>
+    <interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field>
+    <last_time_field>FiveSecondsAgo</last_time_field>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>derive_filename_01</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#x2f;&#x2a;&#xd;&#xa;   objective&#x3a;  calculate a filename which as a prefix, date component, and suffix&#xd;&#xa;               where the prefix and suffix are constants,&#xd;&#xa;               and the date component is a date of the format YYYY-MM-DD &#xd;&#xa;               and equal to the date of the previous day - relative to the current date.&#xd;&#xa;&#xd;&#xa;   example&#x3a;    suppose today&#x27;s date is 2020-03-20.  &#xd;&#xa;               the filename  we want is P2PE_device_report_2020-03-19.tsv.&#xd;&#xa;               &#xd;&#xa;               in this example, prefix &#x3d; &#x27;P2PE_device_report_&#x27; and suffix &#x3d; &#x27;tsv&#x27;.&#xd;&#xa;&#xd;&#xa;               the date component is yesterday&#x27;s date - relative to the current date.  &#xd;&#xa;&#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var yesterday &#x3d; new Date&#x28;&#x29;&#x3b;                                 &#x2f;&#x2a; set yesterday &#x3d; today&#x27;s date               &#x2a;&#x2f;&#xd;&#xa;yesterday.setDate&#x28;yesterday.getDate&#x28;&#x29; - 1&#x29;&#x3b;                 &#x2f;&#x2a; subtract one day to get yesterday&#x27;s date   &#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var source_file &#x3d; prefix                                    &#x2f;&#x2a; format the date the way we want it         &#x2a;&#x2f;&#xd;&#xa;               .concat&#x28;date2str&#x28;yesterday, &#x27;yyyy-MM-dd&#x27;&#x29;&#x29;&#xd;&#xa;               .concat&#x28;suffix&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>source_file</name>
+        <rename>source_file</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>derive_filename_02</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#x2f;&#x2a;&#xd;&#xa;   objective&#x3a;  calculate a filename which as a prefix, date component, and suffix&#xd;&#xa;               where the prefix and suffix are constants,&#xd;&#xa;               and the date component is a date of the format YYYY-MM-DD &#xd;&#xa;               and equal to the date of the previous day - relative to the current date.&#xd;&#xa;&#xd;&#xa;   example&#x3a;    suppose today&#x27;s date is 2020-03-20.  &#xd;&#xa;               the filename  we want is P2PE_device_report_2020-03-19.tsv.&#xd;&#xa;               &#xd;&#xa;               in this example, prefix &#x3d; &#x27;P2PE_device_report_&#x27; and suffix &#x3d; &#x27;tsv&#x27;.&#xd;&#xa;&#xd;&#xa;               the date component is yesterday&#x27;s date - relative to the current date.  &#xd;&#xa;&#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var yesterday &#x3d; new Date&#x28;&#x29;&#x3b;                                 &#x2f;&#x2a; set yesterday &#x3d; today&#x27;s date               &#x2a;&#x2f;&#xd;&#xa;yesterday.setDate&#x28;yesterday.getDate&#x28;&#x29; - 1&#x29;&#x3b;                 &#x2f;&#x2a; subtract one day to get yesterday&#x27;s date   &#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var source_file &#x3d; prefix                                      &#x2f;&#x2a; format the date the way we want it         &#x2a;&#x2f;&#xd;&#xa;               .concat&#x28;date2str&#x28;yesterday, &#x27;yyyy-MM-dd&#x27;&#x29;&#x29;&#xd;&#xa;               .concat&#x28;suffix&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>source_file</name>
+        <rename>source_file</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>filter_01</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+<send_true_to>select_values_01</send_true_to>
+<send_false_to>select_values_for_error_file</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>num_tabs</leftvalue>
+ <function>&#x3d;</function>
+ <rightvalue/>
+ <value><name>constant</name><type>Number</type><text>27.0</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask>&#x23;.&#x23;&#x3b;-&#x23;.&#x23;</mask></value> </condition>
+    </compare>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -633,36 +970,32 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>176</yloc>
+      <xloc>784</xloc>
+      <yloc>464</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>replace_invalid_hyphens_in_zip_code</name>
-    <type>ReplaceString</type>
+    <name>join_02</name>
+    <type>MergeJoin</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <fields>
-      <field>
-        <in_stream_name>location_zip</in_stream_name>
-        <out_stream_name/>
-        <use_regex>no</use_regex>
-        <replace_string>&#xe2;&#x20ac;&#xfffd;</replace_string>
-        <replace_by_string>-</replace_by_string>
-        <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
-        <whole_word>no</whole_word>
-        <case_sensitive>no</case_sensitive>
-      </field>
-    </fields>
+<join_type>INNER</join_type>
+<step1>sort_by_source_row_01</step1>
+<step2>sort_by_source_row_02</step2>
+    <keys_1>
+      <key>source_row</key>
+    </keys_1>
+    <keys_2>
+      <key>source_row</key>
+    </keys_2>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -671,8 +1004,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>608</xloc>
-      <yloc>176</yloc>
+      <xloc>1232</xloc>
+      <yloc>368</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -728,7 +1061,7 @@
         </field>
         <field>
           <column_name>partner_root_name</column_name>
-          <stream_name>partner_root</stream_name>
+          <stream_name>partner_root_name</stream_name>
         </field>
         <field>
           <column_name>partner_root_ccid</column_name>
@@ -740,7 +1073,7 @@
         </field>
         <field>
           <column_name>partner_direct_name</column_name>
-          <stream_name>partner_direct</stream_name>
+          <stream_name>partner_direct_name</stream_name>
         </field>
         <field>
           <column_name>partner_direct_ccid</column_name>
@@ -752,7 +1085,7 @@
         </field>
         <field>
           <column_name>custodian_name</column_name>
-          <stream_name>custodian</stream_name>
+          <stream_name>custodian_name</stream_name>
         </field>
         <field>
           <column_name>custodian_ccid</column_name>
@@ -764,7 +1097,7 @@
         </field>
         <field>
           <column_name>location_name</column_name>
-          <stream_name>location</stream_name>
+          <stream_name>location_name</stream_name>
         </field>
         <field>
           <column_name>location_addr</column_name>
@@ -843,14 +1176,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1040</xloc>
-      <yloc>176</yloc>
+      <xloc>1408</xloc>
+      <yloc>464</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>read_p2pe_device_rows</name>
+    <name>read_p2pe_device_rows_01</name>
     <type>TextFileInput</type>
     <description/>
     <distribute>N</distribute>
@@ -862,9 +1195,9 @@
     </partitioning>
     <accept_filenames>Y</accept_filenames>
     <passing_through_fields>N</passing_through_fields>
-    <accept_field>file_name</accept_field>
-    <accept_stepname>derive_filename</accept_stepname>
-    <separator>	</separator>
+    <accept_field>source_file</accept_field>
+    <accept_stepname>derive_filename_01</accept_stepname>
+    <separator>&#x7e;</separator>
     <enclosure/>
     <enclosure_breaks>N</enclosure_breaks>
     <escapechar/>
@@ -881,13 +1214,13 @@
     <include>N</include>
     <include_field>source_file</include_field>
     <rownum>Y</rownum>
-    <rownumByFile>Y</rownumByFile>
+    <rownumByFile>N</rownumByFile>
     <rownum_field>source_row</rownum_field>
     <format>mixed</format>
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>C&#x3a;&#x5c;Users&#x5c;tsanders&#x5c;Desktop&#x5c;etl_in_out&#x5c;in&#x5c;P2PE_device_report_2020-03-30.tsv</name>
+      <name>&#x2f;Users&#x2f;tsanders&#x2f;Desktop&#x2f;P2PE_device_report_2020-07-16.tsv</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
@@ -899,8 +1232,8 @@
     </filters>
     <fields>
       <field>
-        <name>poi_device_id</name>
-        <type>String</type>
+        <name>one_row</name>
+        <type>None</type>
         <format/>
         <currency/>
         <decimal/>
@@ -910,412 +1243,7 @@
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>poi_serial_number</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>product_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>device_name</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_root_id</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_root</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_direct_id</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_direct</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>custodian_id</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>custodian</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location_id</name>
-        <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location_addr</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location_city</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location_state</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>location_zip</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>state</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>last_state_change</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>activated_on</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>shipped_on</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>received_on</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>source</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_root_ccid</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>partner_direct_ccid</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>custodian_ccid</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>decryption_count</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>decryptions_mtd</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-      </field>
-      <field>
-        <name>decryptions_ytd</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
-        <ifnull/>
-        <position>-1</position>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <trim_type>both</trim_type>
         <repeat>N</repeat>
       </field>
     </fields>
@@ -1352,54 +1280,507 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>400</xloc>
-      <yloc>176</yloc>
+      <xloc>464</xloc>
+      <yloc>272</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>define_filename_prefix_and_suffix</name>
-    <type>RowGenerator</type>
+    <name>read_p2pe_device_rows_02</name>
+    <type>TextFileInput</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <accept_filenames>Y</accept_filenames>
+    <passing_through_fields>N</passing_through_fields>
+    <accept_field>source_file</accept_field>
+    <accept_stepname>derive_filename_02</accept_stepname>
+    <separator>	</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_breaks>N</enclosure_breaks>
+    <escapechar/>
+    <header>Y</header>
+    <nr_headerlines>1</nr_headerlines>
+    <footer>N</footer>
+    <nr_footerlines>1</nr_footerlines>
+    <line_wrapped>N</line_wrapped>
+    <nr_wraps>1</nr_wraps>
+    <layout_paged>N</layout_paged>
+    <nr_lines_per_page>80</nr_lines_per_page>
+    <nr_lines_doc_header>0</nr_lines_doc_header>
+    <noempty>Y</noempty>
+    <include>Y</include>
+    <include_field>long_source_file</include_field>
+    <rownum>Y</rownum>
+    <rownumByFile>N</rownumByFile>
+    <rownum_field>source_row</rownum_field>
+    <format>mixed</format>
+    <encoding/>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <file>
+      <name>&#x2f;Users&#x2f;tsanders&#x2f;Desktop&#x2f;P2PE_device_report_2020-07-16.tsv</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+      <type>CSV</type>
+      <compression>None</compression>
+    </file>
+    <filters>
+    </filters>
     <fields>
       <field>
-        <name>prefix</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>&#x2f;transfer2&#x2f;receiving&#x2f;p2pe&#x2f;P2PE_device_report_</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
+        <name>POI_Device_ID</name>
+        <type>Integer</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
       </field>
       <field>
-        <name>suffix</name>
+        <name>POI_Serial_Number</name>
         <type>String</type>
         <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>.tsv</nullif>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>10</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Product_Name</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>7</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>DeviceName</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>68</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Root_Id</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Root</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Direct_Id</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Direct</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Custodian_Id</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Custodian</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>16</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Location_Id</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Location</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>22</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Address</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>27</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>City</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>12</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>StateProvince</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>12</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Zip</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>10</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>State</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>10</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Last_State_Change</name>
+        <type>String</type>
+        <format>yyyy-MM-dd HH&#x3a;mm&#x3a;ss</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Activated_On</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>19</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Shipped_On</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>19</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Received_On</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>0</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Source</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>12</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Root_CCId</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Partner_Direct_CCId</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Custodian_CC_Id</name>
+        <type>String</type>
+        <format/>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Decryption_Count</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Decryptions_MTD</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>Decryptions_YTD</name>
+        <type>String</type>
+        <format>&#x23;</format>
+        <currency>&#x24;</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>15</length>
+        <precision>0</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
       </field>
     </fields>
-    <limit>1</limit>
-    <never_ending>N</never_ending>
-    <interval_in_ms>5000</interval_in_ms>
-    <row_time_field>now</row_time_field>
-    <last_time_field>FiveSecondsAgo</last_time_field>
+    <limit>0</limit>
+    <error_ignored>N</error_ignored>
+    <skip_bad_files>N</skip_bad_files>
+    <file_error_field/>
+    <file_error_message_field/>
+    <error_line_skipped>N</error_line_skipped>
+    <error_count_field/>
+    <error_fields_field/>
+    <error_text_field/>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <date_format_lenient>Y</date_format_lenient>
+    <date_format_locale>en_US</date_format_locale>
+    <shortFileFieldName>source_file</shortFileFieldName>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
     <cluster_schema/>
     <remotesteps>
       <input>
@@ -1408,17 +1789,17 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>176</yloc>
+      <xloc>272</xloc>
+      <yloc>464</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>derive_filename</name>
+    <name>replace_empty_string_with_null</name>
     <type>ScriptValueMod</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -1429,13 +1810,31 @@
     <optimizationLevel>9</optimizationLevel>
     <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
         <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>&#x2f;&#x2a;&#xd;&#xa;   objective&#x3a;  calculate a filename which as a prefix, date component, and suffix&#xd;&#xa;               where the prefix and suffix are constants,&#xd;&#xa;               and the date component is a date of the format YYYY-MM-DD &#xd;&#xa;               and equal to the date of the previous day - relative to the current date.&#xd;&#xa;&#xd;&#xa;   example&#x3a;    suppose today&#x27;s date is 2020-03-20.  &#xd;&#xa;               the filename  we want is P2PE_device_report_2020-03-19.tsv.&#xd;&#xa;               &#xd;&#xa;               in this example, prefix &#x3d; &#x27;P2PE_device_report_&#x27; and suffix &#x3d; &#x27;tsv&#x27;.&#xd;&#xa;&#xd;&#xa;               the date component is yesterday&#x27;s date - relative to the current date.  &#xd;&#xa;&#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var yesterday &#x3d; new Date&#x28;&#x29;&#x3b;                                 &#x2f;&#x2a; set yesterday &#x3d; today&#x27;s date               &#x2a;&#x2f;&#xd;&#xa;yesterday.setDate&#x28;yesterday.getDate&#x28;&#x29; - 1&#x29;&#x3b;                 &#x2f;&#x2a; subtract one day to get yesterday&#x27;s date   &#x2a;&#x2f;&#xd;&#xa;&#xd;&#xa;var file_name &#x3d; prefix                                      &#x2f;&#x2a; format the date the way we want it         &#x2a;&#x2f;&#xd;&#xa;               .concat&#x28;date2str&#x28;yesterday, &#x27;yyyy-MM-dd&#x27;&#x29;&#x29;&#xd;&#xa;               .concat&#x28;suffix&#x29;&#x3b;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;&#xd;&#xa;</jsScript_script>
-      </jsScript>    </jsScripts>    <fields>      <field>        <name>file_name</name>
-        <rename>file_name</rename>
+        <jsScript_script>&#x2f;&#x2a;&#xa;   The columns referenced below are declared as STRING in Pentaho but INT in MySQL.&#xa;   If any of the columns below have the empty string as its value,&#xa;   MySQL will reject it since it tries to store a string in an INT column.&#xa;   Therefore empty strings will be converted to NULL so MySQL will not fail &#xa;   with a datatype collision. &#xa;&#x2a;&#x2f;&#xa;&#xa;&#xa;function empty_string_to_null&#x28;str&#x29;&#x7b;&#xa;   if&#x28;str.length &#x3d;&#x3d; 0&#x29;&#x7b;&#xa;      return null&#x3b;&#xa;   &#x7d;else&#x7b;&#xa;      return str&#x3b;&#xa;   &#x7d;&#xa;&#x7d;&#xa;&#xa;var js_partner_root_id   &#x3d; empty_string_to_null&#x28;partner_root_id&#x29;&#x3b;&#xa;var js_partner_direct_id &#x3d; empty_string_to_null&#x28;partner_direct_id&#x29;&#x3b;&#xa;var js_custodian_id      &#x3d; empty_string_to_null&#x28;custodian_id&#x29;&#x3b;&#xa;var js_location_id       &#x3d; empty_string_to_null&#x28;location_id&#x29;&#x3b;&#xa;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>js_partner_root_id</name>
+        <rename>partner_root_id</rename>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
-        <replace>N</replace>
+        <replace>Y</replace>
+      </field>      <field>        <name>js_partner_direct_id</name>
+        <rename>partner_direct_id</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>      <field>        <name>js_custodian_id</name>
+        <rename>custodian_id</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
+      </field>      <field>        <name>js_location_id</name>
+        <rename>location_id</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>Y</replace>
       </field>    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
@@ -1444,8 +1843,428 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>176</yloc>
+      <xloc>1056</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>replace_invalid_hyphens_in_zip_code</name>
+    <type>ReplaceString</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <in_stream_name>location_zip</in_stream_name>
+        <out_stream_name/>
+        <use_regex>no</use_regex>
+        <replace_string>&#xe2;&#x20ac;&#xfffd;</replace_string>
+        <replace_by_string>-</replace_by_string>
+        <set_empty_string>N</set_empty_string>
+        <replace_field_by_string/>
+        <whole_word>no</whole_word>
+        <case_sensitive>no</case_sensitive>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_01</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>source_row</name>
+      </field>      <field>        <name>one_row</name>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_02</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>POI_Device_ID</name>
+        <rename>poi_device_id</rename>
+      </field>      <field>        <name>POI_Serial_Number</name>
+        <rename>poi_serial_number</rename>
+      </field>      <field>        <name>Product_Name</name>
+        <rename>product_name</rename>
+      </field>      <field>        <name>DeviceName</name>
+        <rename>device_name</rename>
+      </field>      <field>        <name>Partner_Root_Id</name>
+        <rename>partner_root_id</rename>
+      </field>      <field>        <name>Partner_Root</name>
+        <rename>partner_root</rename>
+      </field>      <field>        <name>Partner_Direct_Id</name>
+        <rename>partner_direct_id</rename>
+      </field>      <field>        <name>Partner_Direct</name>
+        <rename>partner_direct</rename>
+      </field>      <field>        <name>Custodian_Id</name>
+        <rename>custodian_id</rename>
+      </field>      <field>        <name>Custodian</name>
+        <rename>custodian</rename>
+      </field>      <field>        <name>Location_Id</name>
+        <rename>location_id</rename>
+      </field>      <field>        <name>Location</name>
+        <rename>location</rename>
+      </field>      <field>        <name>Address</name>
+        <rename>location_addr</rename>
+      </field>      <field>        <name>City</name>
+        <rename>location_city</rename>
+      </field>      <field>        <name>StateProvince</name>
+        <rename>location_state</rename>
+      </field>      <field>        <name>Zip</name>
+        <rename>location_zip</rename>
+      </field>      <field>        <name>State</name>
+        <rename>state</rename>
+      </field>      <field>        <name>Last_State_Change</name>
+        <rename>last_state_change</rename>
+      </field>      <field>        <name>Activated_On</name>
+        <rename>activated_on</rename>
+      </field>      <field>        <name>Shipped_On</name>
+        <rename>shipped_on</rename>
+      </field>      <field>        <name>Received_On</name>
+        <rename>received_on</rename>
+      </field>      <field>        <name>Source</name>
+        <rename>source</rename>
+      </field>      <field>        <name>Partner_Root_CCId</name>
+        <rename>partner_root_ccid</rename>
+      </field>      <field>        <name>Partner_Direct_CCId</name>
+        <rename>partner_direct_ccid</rename>
+      </field>      <field>        <name>Custodian_CC_Id</name>
+        <rename>custodian_ccid</rename>
+      </field>      <field>        <name>Decryption_Count</name>
+        <rename>decryption_count</rename>
+      </field>      <field>        <name>Decryptions_MTD</name>
+        <rename>decryptions_mtd</rename>
+      </field>      <field>        <name>Decryptions_YTD</name>
+        <rename>decryptions_ytd</rename>
+      </field>      <field>        <name>source_row</name>
+      </field>      <field>        <name>source_file</name>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_04</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>poi_device_id</name>
+      </field>      <field>        <name>poi_serial_number</name>
+      </field>      <field>        <name>device_name</name>
+      </field>      <field>        <name>product_name</name>
+      </field>      <field>        <name>partner_root_id</name>
+      </field>      <field>        <name>partner_root</name>
+        <rename>partner_root_name</rename>
+      </field>      <field>        <name>partner_root_ccid</name>
+      </field>      <field>        <name>partner_direct_id</name>
+      </field>      <field>        <name>partner_direct</name>
+        <rename>partner_direct_name</rename>
+      </field>      <field>        <name>partner_direct_ccid</name>
+      </field>      <field>        <name>custodian_id</name>
+      </field>      <field>        <name>custodian</name>
+        <rename>custodian_name</rename>
+      </field>      <field>        <name>custodian_ccid</name>
+      </field>      <field>        <name>location_id</name>
+      </field>      <field>        <name>location</name>
+        <rename>location_name</rename>
+      </field>      <field>        <name>location_addr</name>
+      </field>      <field>        <name>location_city</name>
+      </field>      <field>        <name>location_state</name>
+      </field>      <field>        <name>location_zip</name>
+      </field>      <field>        <name>state</name>
+      </field>      <field>        <name>last_state_change</name>
+      </field>      <field>        <name>activated_on</name>
+      </field>      <field>        <name>shipped_on</name>
+      </field>      <field>        <name>source</name>
+      </field>      <field>        <name>decryption_count</name>
+      </field>      <field>        <name>decryptions_mtd</name>
+      </field>      <field>        <name>decryptions_ytd</name>
+      </field>      <field>        <name>source_row</name>
+      </field>      <field>        <name>source_file</name>
+      </field>      <field>        <name>report_date</name>
+      </field>      <field>        <name>date_created</name>
+      </field>      <field>        <name>date_updated</name>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1408</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_for_error_file</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>      <field>        <name>source_file</name>
+      </field>      <field>        <name>source_row</name>
+      </field>      <field>        <name>one_row</name>
+        <rename>file_row</rename>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_by_source_row_01</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>source_row</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1232</xloc>
+      <yloc>272</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_by_source_row_02</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>source_row</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1232</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>write_error_file_01</name>
+    <type>TextFileOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <separator>&#x3b;</separator>
+    <enclosure>&#x22;</enclosure>
+    <enclosure_forced>N</enclosure_forced>
+    <enclosure_fix_disabled>N</enclosure_fix_disabled>
+    <header>Y</header>
+    <footer>N</footer>
+    <format>DOS</format>
+    <compression>None</compression>
+    <encoding>UTF-8</encoding>
+    <endedLine/>
+    <fileNameInField>N</fileNameInField>
+    <fileNameField/>
+    <create_parent_folder>Y</create_parent_folder>
+    <file>
+      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_errors_default&#x2f;decryptx_device_day_errors</name>
+      <is_command>N</is_command>
+      <servlet_output>N</servlet_output>
+      <do_not_open_new_file_init>N</do_not_open_new_file_init>
+      <extention>txt</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <add_to_result_filenames>Y</add_to_result_filenames>
+      <pad>N</pad>
+      <fast_dump>N</fast_dump>
+      <splitevery>0</splitevery>
+    </file>
+    <fields>
+      <field>
+        <name>source_file</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>100</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>source_row</name>
+        <type>Integer</type>
+        <format>&#x23;&#x3b;-&#x23;</format>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif/>
+        <trim_type>none</trim_type>
+        <length>10</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>file_row</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <trim_type>both</trim_type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -1453,7 +2272,7 @@
   <step_error_handling>
       <error>
         <source_step>populate_decryptx_device_day</source_step>
-        <target_step>Errors p2pe_device</target_step>
+        <target_step/>
         <is_enabled>Y</is_enabled>
         <nr_valuename>err_count</nr_valuename>
         <descriptions_valuename>err_description</descriptions_valuename>
