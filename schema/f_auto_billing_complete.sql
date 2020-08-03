@@ -126,4 +126,3 @@ SELECT
     COALESCE(date_updated, '')                            AS date_updated
 FROM auto_billing_dw.f_auto_billing_complete 
 ;
-
