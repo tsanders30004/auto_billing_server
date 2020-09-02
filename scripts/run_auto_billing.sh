@@ -22,106 +22,106 @@ ls -lt ~/dir_source_default/*map*
 echo
 echo Stop here if any of the map files are missing or out-of-date.
 echo
-# read -p "press enter to continue..."
+read -p "press enter to continue..."
 
 echo Make sure the tables below have been updated:
 mysql -e"CALL check_prerequisites()" auto_billing_staging
 echo 
 
-# read -p "press enter to run src_cardconex_account.ktr..."
+read -p "press enter to run src_cardconex_account.ktr..."
 
 # ########## Account ##################################################################################################
 # 1 Jun 2020:  Clean up the comments where next month.
 # Output Table:  auto_billing_staging.stg_cardconex_account
 
 cd /home/svc-dbwh/repositories/sales_force/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file src_cardconex_account_2.ktr
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_cardconex_account_2.ktr
 
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_cardconex_account; set foreign_key_checks=1;"
 mysql -v -v -e"INSERT INTO auto_billing_staging.stg_cardconex_account SELECT * FROM sales_force.test_cardconex_account"
 
-# read -p "press enter to run src_decryptx_cardconex_map.ktr..."
+read -p "press enter to run src_decryptx_cardconex_map.ktr..."
 
 # ########## Decryptx Cardconex Map ###################################################################################
 # Input File:    decryptx_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_decryptx_cardconex_map
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file src_decryptx_cardconex_map.ktr
-# read -p "press enter to run src_decryptx_device_cardconex_map.ktr..."
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
+
+# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_cardconex_map.ktr
+read -p "press enter to run src_decryptx_device_cardconex_map.ktr..."
 
 ########## Decryptx Device Cardconex Map ##############################################################################
 # Input File:    decryptx_device_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_decryptx_device_cardconex_map
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file src_decryptx_device_cardconex_map.ktr
-# read -p "press enter to run src_payconex_cardconex_map.ktr..."
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
+
+# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_device_cardconex_map.ktr
+read -p "press enter to run src_payconex_cardconex_map.ktr..."
 
 ########## Payconex Cardconex Map #####################################################################################
 # Input File:    payconex_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_payconex_cardconex_map
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file src_payconex_cardconex_map.ktr
-# read -p "press enter to verify length of cardconex_acct_id's..."
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
+
+# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_payconex_cardconex_map.ktr
+read -p "press enter to verify length of cardconex_acct_id's..."
 
 ########## Check cardconex_acct_id Lengths in Map Files ###############################################################
 mysql -v -v -e "call auto_billing_staging.check_cc_acct_len"
-# read -p "press enter to show staging summary..."
+read -p "press enter to show staging summary..."
 
 # ############################## Show Summary #########################################################################
 mysql -v -v -e"call auto_billing_staging.show_input_file_summary;"
-# read -p "press enter to run dw_d_pricing.ktr..."
+read -p "press enter to run dw_d_pricing.ktr..."
 
 ########## Pricing ####################################################################################################
 # Output Table:  auto_billing_dw.d_pricing
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.d_pricing; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file dw_d_pricing.ktr
-# read -p "press enter to run dw_d_merchant.ktr..."
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_pricing.ktr
+read -p "press enter to run dw_d_merchant.ktr..."
 
 ########## Merchant ###################################################################################################
 # Output Table:  auto_billing_dw.d_merchant
 # Note:  Verify that we can always call auto_billing_dw.update_billing_frequency()
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
+
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.d_merchant; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file dw_d_merchant.ktr
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_merchant.ktr
 mysql -v -v -e"call auto_billing_dw.update_billing_frequency()"
-# read -p "press enter to run dw_f_decryptx_day.ktr..."
+read -p "press enter to run dw_f_decryptx_day.ktr..."
 
 # ############################## f_decryptx_day #######################################################################
 # Output Tables:  auto_billing_dw.f_decryptx_day_alt and auto_billing_dw.f_decryptx_day
 #                 auto_billing_dw_d_device
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
+
 mysql -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_decryptx_day_alt; truncate auto_billing_dw.f_decryptx_day; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file dw_f_decryptx_day.ktr
-# read -p "press enter to run dw_d_processor.ktr..."
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_decryptx_day.ktr
+read -p "press enter to run dw_d_processor.ktr..."
 
 # ############################## d_processor ##########################################################################
 # Output Table:  auto_billing_dw.d_processor (not truncated)
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file dw_d_processor.ktr
-# read -p "press enter to dw_f_payconex_day.ktr..."
+
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_processor.ktr
+read -p "press enter to dw_f_payconex_day.ktr..."
 
 # ############################## f_payconex_day #######################################################################
 # Output Table:  auto_billing_dw.f_payconex_day_alt and auto_billing_dw.f_payconex_day
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_payconex_day_alt; truncate auto_billing_dw.f_payconex_day; set foreign_key_checks=1;"
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file dw_f_payconex_day.ktr
-# read -p "press enter to run dw_f_billing_month.ktr..."
+
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_payconex_day.ktr
+read -p "press enter to run dw_f_billing_month.ktr..."
 
 # ############################## f_billing_month ######################################################################
 # Output Table:  auto_billing_dw.f_billing_month_alt and auto_billing_dw.f_billing_month
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
+
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_billing_month_alt; truncate auto_billing_dw.f_billing_month; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file dw_f_billing_month.ktr
-# read -p "press enter to run rpt_billing.ktr..."
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_billing_month.ktr
+read -p "press enter to run rpt_billing.ktr..."
 
 # ############################## Auto Billing Complete ################################################################
 # Output Table:  auto_billing_dw.f_auto_billing_complete (truncated)
 # Output File:   /home/svc-dbwh/dir_output_default/auto_billing_complete_YYYYMMDD:HHMMSS.txt
-cd /home/svc-dbwh/repositories/auto_billing/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file rpt_billing.ktr
+
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/rpt_billing.ktr
 
 # ############################## Update auto_billing_dw.f_auto_billing_dw.payconex_acct_id ############################
 mysql auto_billing_dw < /home/svc-dbwh/repositories/auto_billing/schema/update_payconex_acct_id.sql
@@ -155,7 +155,7 @@ fn2=$(ls -t | head -n1)
 # email the file
 mailx -a $fn2 -s "Auto Billing File" tsanders@bluefin.com < ~/temp/msg.txt
 
-# read -p "press enter display sum of each column..."
+read -p "press enter display sum of each column..."
 
 # show sum of each column
 mysql -v -v -e"SELECT 
@@ -274,8 +274,7 @@ mysql -v -v -e"SELECT
   sum(reissued_ach_transactions) AS reissued_ach_transactions
 FROM auto_billing_dw.f_auto_billing_complete\G" auto_billing_dw
 
-# read -p "press enter to continue..."
+read -p "press enter to continue..."
 
 echo Remember to update the history tables via update_history.ktr.
-echo To delete data in all history tables for period my_period (YYYY-DD-01):  CALL delete_history(my_period);
 
