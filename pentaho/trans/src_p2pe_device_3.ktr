@@ -562,12 +562,12 @@
     </hop>
     <hop>
       <from>filter_01</from>
-      <to>select_values_for_error_file</to>
+      <to>select_values_for_err_file</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>select_values_for_error_file</from>
-      <to>write_error_file_01</to>
+      <from>select_values_for_err_file</from>
+      <to>write_err_file_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -901,7 +901,7 @@
       <schema_name/>
     </partitioning>
 <send_true_to>select_values_01</send_true_to>
-<send_false_to>select_values_for_error_file</send_false_to>
+<send_false_to>select_values_for_err_file</send_false_to>
     <compare>
 <condition>
  <negated>N</negated>
@@ -2062,7 +2062,7 @@
     </step>
 
   <step>
-    <name>select_values_for_error_file</name>
+    <name>select_values_for_err_file</name>
     <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
@@ -2073,7 +2073,9 @@
       <schema_name/>
     </partitioning>
     <fields>      <field>        <name>source_file</name>
+        <rename/>
       </field>      <field>        <name>source_row</name>
+        <rename/>
       </field>      <field>        <name>one_row</name>
         <rename>file_row</rename>
       </field>        <select_unspecified>N</select_unspecified>
@@ -2176,7 +2178,7 @@
     </step>
 
   <step>
-    <name>write_error_file_01</name>
+    <name>write_err_file_01</name>
     <type>TextFileOutput</type>
     <description/>
     <distribute>Y</distribute>

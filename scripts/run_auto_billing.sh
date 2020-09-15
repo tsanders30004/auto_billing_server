@@ -17,7 +17,7 @@ rm -f ~/logs/run_auto_billing.txt
 
 echo Confirm that CURRENT VERSIONS of the three map files are present:
 echo -----------------------------------------------------------------
-ls -lt ~/dir_source_default/*map*
+ls -lt ~/dir_source_default/*map_??????.txt
 
 echo
 echo Stop here if any of the map files are missing or out-of-date.
@@ -45,25 +45,25 @@ read -p "press enter to run src_decryptx_cardconex_map.ktr..."
 # ########## Decryptx Cardconex Map ###################################################################################
 # Input File:    decryptx_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_decryptx_cardconex_map
-# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
+mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
 
-# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_cardconex_map.ktr
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_cardconex_map.ktr
 read -p "press enter to run src_decryptx_device_cardconex_map.ktr..."
 
 ########## Decryptx Device Cardconex Map ##############################################################################
 # Input File:    decryptx_device_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_decryptx_device_cardconex_map
-# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
+mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
 
-# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_device_cardconex_map.ktr
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_decryptx_device_cardconex_map.ktr
 read -p "press enter to run src_payconex_cardconex_map.ktr..."
 
 ########## Payconex Cardconex Map #####################################################################################
 # Input File:    payconex_cardconex_map.YYYYMMDD.xlsx
 # Output Table:  auto_billing_staging.stg_payconex_cardconex_map
-# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
+mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
 
-# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_payconex_cardconex_map.ktr
+/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_payconex_cardconex_map.ktr
 read -p "press enter to verify length of cardconex_acct_id's..."
 
 ########## Check cardconex_acct_id Lengths in Map Files ###############################################################
