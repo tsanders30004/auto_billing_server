@@ -448,10 +448,10 @@
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
-    <server>suw-srvr-14</server>
+    <server>suw-srvr-14.capitalpayments.local</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>auto_billing_staging</database>
+    <database>information_schema</database>
     <port>3306</port>
     <username>data_warehouse</username>
     <password>Encrypted 2be98afc86aa79088be1ca879d0adabcd</password>
@@ -476,67 +476,87 @@
   <order>
     <hop>
       <from>src payconex</from>
-      <to>Sort payconex</to>
+      <to>sort_payconex</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>src decryptx</from>
-      <to>Sort decryptx</to>
+      <to>sort_decryptx</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>src billing</from>
-      <to>Sort billing</to>
+      <to>sort_billing</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort payconex</from>
-      <to>Multiway Merge Join</to>
+      <from>select_values_01</from>
+      <to>replace_null_values_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort decryptx</from>
-      <to>Multiway Merge Join</to>
+      <from>replace_null_values_01</from>
+      <to>sort_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort billing</from>
-      <to>Multiway Merge Join</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Select Values</from>
-      <to>Null if...</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Null if...</from>
-      <to>Sort rows</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Multiway Merge Join</from>
-      <to>Modified Java Script Value</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Modified Java Script Value</from>
-      <to>Select Values</to>
+      <from>calculations_01</from>
+      <to>select_values_01</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
       <from>truncate_f_auto_billing_complete_to_1024_chars</from>
       <to>update_f_auto_billing_complete</to>
+      <enabled>N</enabled>
+    </hop>
+    <hop>
+      <from>sort_01</from>
+      <to>truncate_f_auto_billing_complete_to_1024_chars</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Sort rows</from>
-      <to>truncate_f_auto_billing_complete_to_1024_chars</to>
+      <from>truncate_f_auto_billing_complete_to_1024_chars</from>
+      <to>calculations_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>calculations_02</from>
+      <to>select_values_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_payconex</from>
+      <to>multi_way_merge_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_decryptx</from>
+      <to>multi_way_merge_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>sort_billing</from>
+      <to>multi_way_merge_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>multi_way_merge_01</from>
+      <to>calculations_01</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>select_values_02</from>
+      <to>replace_null_values_02</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>replace_null_values_02</from>
+      <to>update_f_auto_billing_complete_shieldconex</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Modified Java Script Value</name>
+    <name>calculations_01</name>
     <type>ScriptValueMod</type>
     <description/>
     <distribute>Y</distribute>
@@ -619,17 +639,209 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
+      <xloc>448</xloc>
       <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Multiway Merge Join</name>
+    <name>calculations_02</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var bill_to_id &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var bill_to_name &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var collection_method&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var hold_bill&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pci_compliance_fee &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pci_monthly_charge &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pci_non_compliance_charge&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pci_non_compliance_fee &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pricing_shieldconex_fields_fee &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pricing_shieldconex_monthly_fee&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var pricing_shieldconex_monthly_minimum_fee&#xa0; &#x3d; null&#x3b;&#xa;var pricing_shieldconex_transaction_fee&#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var segment_intacct&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var shieldconex_fields_charge&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var shieldconex_monthly_charge &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var shieldconex_monthly_minimum_charge &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var shieldconex_transaction_charge &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var start_date &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_bad_detokenized&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_bad_detokenized_fields &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_bad_tokenized&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_bad_tokenized_fields &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_good_detokenized &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_good_detokenized_fields&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_good_tokenized &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var total_good_tokenized_fields&#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;&#xa;var vintage_v2 &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#xa0; &#x3d; null&#x3b;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>bill_to_id</name>
+        <rename>bill_to_id</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>bill_to_name</name>
+        <rename>bill_to_name</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>collection_method</name>
+        <rename>collection_method</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>hold_bill</name>
+        <rename>hold_bill</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pci_compliance_fee</name>
+        <rename>pci_compliance_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pci_monthly_charge</name>
+        <rename>pci_monthly_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pci_non_compliance_charge</name>
+        <rename>pci_non_compliance_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pci_non_compliance_fee</name>
+        <rename>pci_non_compliance_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pricing_shieldconex_fields_fee</name>
+        <rename>pricing_shieldconex_fields_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pricing_shieldconex_monthly_fee</name>
+        <rename>pricing_shieldconex_monthly_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pricing_shieldconex_monthly_minimum_fee</name>
+        <rename>pricing_shieldconex_monthly_minimum_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>pricing_shieldconex_transaction_fee</name>
+        <rename>pricing_shieldconex_transaction_fee</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>segment_intacct</name>
+        <rename>segment_intacct</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>shieldconex_fields_charge</name>
+        <rename>shieldconex_fields_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>shieldconex_monthly_charge</name>
+        <rename>shieldconex_monthly_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>shieldconex_monthly_minimum_charge</name>
+        <rename>shieldconex_monthly_minimum_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>shieldconex_transaction_charge</name>
+        <rename>shieldconex_transaction_charge</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>start_date</name>
+        <rename>start_date</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_bad_detokenized</name>
+        <rename>total_bad_detokenized</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_bad_detokenized_fields</name>
+        <rename>total_bad_detokenized_fields</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_bad_tokenized</name>
+        <rename>total_bad_tokenized</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_bad_tokenized_fields</name>
+        <rename>total_bad_tokenized_fields</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_good_detokenized</name>
+        <rename>total_good_detokenized</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_good_detokenized_fields</name>
+        <rename>total_good_detokenized_fields</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_good_tokenized</name>
+        <rename>total_good_tokenized</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>total_good_tokenized_fields</name>
+        <rename>total_good_tokenized_fields</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>      <field>        <name>vintage_v2</name>
+        <rename>vintage_v2</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>    </fields>    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>576</xloc>
+      <yloc>544</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>multi_way_merge_01</name>
     <type>MultiwayMergeJoin</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -637,9 +849,9 @@
       <schema_name/>
     </partitioning>
     <join_type>FULL OUTER</join_type>
-    <step0>Sort payconex</step0>
-    <step1>Sort decryptx</step1>
-    <step2>Sort billing</step2>
+    <step0>sort_payconex</step0>
+    <step1>sort_decryptx</step1>
+    <step2>sort_billing</step2>
     <number_input>3</number_input>
     <keys>
       <key>cardconex_acct_id</key>
@@ -654,14 +866,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
+      <xloc>304</xloc>
       <yloc>160</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Null if...</name>
+    <name>replace_null_values_01</name>
     <type>NullIf</type>
     <description/>
     <distribute>Y</distribute>
@@ -689,14 +901,852 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>688</xloc>
-      <yloc>160</yloc>
+      <xloc>576</xloc>
+      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Select Values</name>
+    <name>replace_null_values_02</name>
+    <type>IfNull</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <replaceAllByValue/>
+      <replaceAllMask/>
+      <selectFields>Y</selectFields>
+      <selectValuesType>N</selectValuesType>
+      <setEmptyStringAll>N</setEmptyStringAll>
+    <valuetypes>
+      <valuetype>
+        <name>Number</name>
+        <value/>
+        <mask/>
+        <set_type_empty_string>N</set_type_empty_string>
+        </valuetype>
+      </valuetypes>
+    <fields>
+      <field>
+        <name>pci_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pci_non_compliance_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>shieldconex_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>shieldconex_transaction_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>shieldconex_monthly_minimum_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>shieldconex_fields_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_encryption_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_token_flat_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_token_flat_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>achworks_credit_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>achworks_per_trans_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_returnerror_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_noc_message_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>achworks_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_sale_volume_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_sale_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>group_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_reissued_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_reissued_ach_trans_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_token_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>apriva_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>file_transfer_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>misc_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pc_account_updater_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pci_scans_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>card_convenience_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_monthly_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_per_auth_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_per_auth_decline_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_per_refund_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_per_credit_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>gw_per_token_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_device_activated_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_device_activating_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_device_stored_charge</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_credit_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_discount_rate</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_noc_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_per_gw_trans_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_return_error_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_ach_transaction_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_bluefin_gateway_discount_rate</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_file_transfer_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gateway_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_group_tag_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_per_auth_decline_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_per_transaction_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_per_credit_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_per_refund_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_per_sale_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_per_token_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_gw_reissued_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_misc_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_device_activated_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_device_activating_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_device_stored_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_encryption_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_monthly_flat_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_one_time_key_injection_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_p2pe_tokenization_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_pci_scans_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_pc_acct_updater_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pci_compliance_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pci_non_compliance_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_shieldconex_monthly_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_shieldconex_transaction_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_shieldconex_fields_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>pricing_shieldconex_monthly_minimum_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_good_tokenized</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_bad_tokenized</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_good_detokenized</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_bad_detokenized</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_good_tokenized_fields</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_bad_tokenized_fields</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_good_detokenized_fields</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>total_bad_detokenized_fields</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>decryption_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_activated_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_activating_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_stored_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_other_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_activating_activated_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_stored_activated_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>device_other_activated_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>user_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>group_count</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_auth_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_auth_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_sale_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_sale_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_ref_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_ref_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_credit_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_credit_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_sale_decline_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_auth_decline_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_batches</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_keyed_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_keyed_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_swiped_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_swiped_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_sale_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_sale_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_credit_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_credit_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_batches</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_returns</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_errors</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>ach_noc_messages</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_auth_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_auth_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_sale_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_sale_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_refund_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_refund_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_credit_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_credit_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_sale_decline_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_auth_decline_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_active_device_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_inactive_device_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>tokens_stored</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>batch_files_processed</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_capture_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>cc_capture_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_capture_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_capture_vol</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>combined_decline_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_declined_trans</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>p2pe_tokens_stored</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>reissued_cc_transactions</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
+        <name>reissued_ach_transactions</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>736</xloc>
+      <yloc>656</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>select_values_01</name>
     <type>SelectValues</type>
     <description/>
     <distribute>N</distribute>
@@ -846,8 +1896,8 @@
     </step>
 
   <step>
-    <name>Sort billing</name>
-    <type>SortRows</type>
+    <name>select_values_02</name>
+    <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -856,24 +1906,310 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
-      <prefix>out</prefix>
-      <sort_size>1000000</sort_size>
-      <free_memory/>
-      <compress>N</compress>
-      <compress_variable/>
-      <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>cardconex_acct_id</name>
-        <ascending>Y</ascending>
-        <case_sensitive>Y</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema/>
+    <fields>      <field>        <name>bill_to_id</name>
+        <rename/>
+      </field>      <field>        <name>bill_to_name</name>
+        <rename/>
+      </field>      <field>        <name>collection_method</name>
+        <rename/>
+      </field>      <field>        <name>start_date</name>
+        <rename/>
+      </field>      <field>        <name>vintage_v2</name>
+        <rename/>
+      </field>      <field>        <name>hold_bill</name>
+        <rename/>
+      </field>      <field>        <name>segment_intacct</name>
+        <rename/>
+      </field>      <field>        <name>segment_now</name>
+        <rename/>
+      </field>      <field>        <name>org_now</name>
+        <rename/>
+      </field>      <field>        <name>chain_now</name>
+        <rename/>
+      </field>      <field>        <name>industry_now</name>
+        <rename/>
+      </field>      <field>        <name>dba_name</name>
+        <rename/>
+      </field>      <field>        <name>year_mon</name>
+        <rename/>
+      </field>      <field>        <name>cardconex_acct_id</name>
+        <rename/>
+      </field>      <field>        <name>cardconex_acct_name</name>
+        <rename/>
+      </field>      <field>        <name>payconex_acct_id</name>
+        <rename/>
+      </field>      <field>        <name>payconex_acct_name</name>
+        <rename/>
+      </field>      <field>        <name>payconex_acct_ids</name>
+        <rename/>
+      </field>      <field>        <name>pci_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>pci_non_compliance_charge</name>
+        <rename/>
+      </field>      <field>        <name>shieldconex_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>shieldconex_transaction_charge</name>
+        <rename/>
+      </field>      <field>        <name>shieldconex_monthly_minimum_charge</name>
+        <rename/>
+      </field>      <field>        <name>shieldconex_fields_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_encryption_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_token_flat_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_token_flat_charge</name>
+        <rename/>
+      </field>      <field>        <name>achworks_credit_charge</name>
+        <rename/>
+      </field>      <field>        <name>achworks_per_trans_charge</name>
+        <rename/>
+      </field>      <field>        <name>ach_returnerror_charge</name>
+        <rename/>
+      </field>      <field>        <name>ach_noc_message_charge</name>
+        <rename/>
+      </field>      <field>        <name>achworks_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>ach_sale_volume_charge</name>
+        <rename/>
+      </field>      <field>        <name>cc_sale_charge</name>
+        <rename/>
+      </field>      <field>        <name>group_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_reissued_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_reissued_ach_trans_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_token_charge</name>
+        <rename/>
+      </field>      <field>        <name>apriva_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>file_transfer_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>misc_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>pc_account_updater_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>pci_scans_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>card_convenience_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_monthly_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_per_auth_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_per_auth_decline_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_per_refund_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_per_credit_charge</name>
+        <rename/>
+      </field>      <field>        <name>gw_per_token_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_device_activated_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_device_activating_charge</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_device_stored_charge</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_credit_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_discount_rate</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_noc_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_per_gw_trans_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_return_error_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_ach_transaction_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_bluefin_gateway_discount_rate</name>
+        <rename/>
+      </field>      <field>        <name>pricing_file_transfer_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gateway_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_group_tag_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_per_auth_decline_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_per_transaction_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_per_credit_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_per_refund_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_per_sale_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_per_token_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_gw_reissued_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_misc_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_device_activated_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_device_activating_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_device_stored_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_encryption_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_monthly_flat_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_one_time_key_injection_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_p2pe_tokenization_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_pci_scans_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_pc_acct_updater_fee</name>
+        <rename/>
+      </field>      <field>        <name>pci_compliance_fee</name>
+        <rename/>
+      </field>      <field>        <name>pci_non_compliance_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_shieldconex_monthly_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_shieldconex_transaction_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_shieldconex_fields_fee</name>
+        <rename/>
+      </field>      <field>        <name>pricing_shieldconex_monthly_minimum_fee</name>
+        <rename/>
+      </field>      <field>        <name>total_good_tokenized</name>
+        <rename/>
+      </field>      <field>        <name>total_bad_tokenized</name>
+        <rename/>
+      </field>      <field>        <name>total_good_detokenized</name>
+        <rename/>
+      </field>      <field>        <name>total_bad_detokenized</name>
+        <rename/>
+      </field>      <field>        <name>total_good_tokenized_fields</name>
+        <rename/>
+      </field>      <field>        <name>total_bad_tokenized_fields</name>
+        <rename/>
+      </field>      <field>        <name>total_good_detokenized_fields</name>
+        <rename/>
+      </field>      <field>        <name>total_bad_detokenized_fields</name>
+        <rename/>
+      </field>      <field>        <name>decryption_count</name>
+        <rename/>
+      </field>      <field>        <name>device_activated_count</name>
+        <rename/>
+      </field>      <field>        <name>device_activating_count</name>
+        <rename/>
+      </field>      <field>        <name>device_stored_count</name>
+        <rename/>
+      </field>      <field>        <name>device_other_count</name>
+        <rename/>
+      </field>      <field>        <name>device_activating_activated_count</name>
+        <rename/>
+      </field>      <field>        <name>device_stored_activated_count</name>
+        <rename/>
+      </field>      <field>        <name>device_other_activated_count</name>
+        <rename/>
+      </field>      <field>        <name>user_count</name>
+        <rename/>
+      </field>      <field>        <name>group_count</name>
+        <rename/>
+      </field>      <field>        <name>cc_auth_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_auth_vol</name>
+        <rename/>
+      </field>      <field>        <name>cc_sale_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_sale_vol</name>
+        <rename/>
+      </field>      <field>        <name>cc_ref_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_ref_vol</name>
+        <rename/>
+      </field>      <field>        <name>cc_credit_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_credit_vol</name>
+        <rename/>
+      </field>      <field>        <name>cc_sale_decline_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_auth_decline_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_batches</name>
+        <rename/>
+      </field>      <field>        <name>cc_keyed_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_keyed_vol</name>
+        <rename/>
+      </field>      <field>        <name>cc_swiped_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_swiped_vol</name>
+        <rename/>
+      </field>      <field>        <name>ach_sale_trans</name>
+        <rename/>
+      </field>      <field>        <name>ach_sale_vol</name>
+        <rename/>
+      </field>      <field>        <name>ach_credit_trans</name>
+        <rename/>
+      </field>      <field>        <name>ach_credit_vol</name>
+        <rename/>
+      </field>      <field>        <name>ach_batches</name>
+        <rename/>
+      </field>      <field>        <name>ach_returns</name>
+        <rename/>
+      </field>      <field>        <name>ach_errors</name>
+        <rename/>
+      </field>      <field>        <name>ach_noc_messages</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_auth_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_auth_vol</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_sale_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_sale_vol</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_refund_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_refund_vol</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_credit_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_credit_vol</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_sale_decline_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_auth_decline_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_active_device_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_inactive_device_trans</name>
+        <rename/>
+      </field>      <field>        <name>tokens_stored</name>
+        <rename/>
+      </field>      <field>        <name>batch_files_processed</name>
+        <rename/>
+      </field>      <field>        <name>cc_capture_trans</name>
+        <rename/>
+      </field>      <field>        <name>cc_capture_vol</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_capture_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_capture_vol</name>
+        <rename/>
+      </field>      <field>        <name>combined_decline_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_declined_trans</name>
+        <rename/>
+      </field>      <field>        <name>p2pe_tokens_stored</name>
+        <rename/>
+      </field>      <field>        <name>reissued_cc_transactions</name>
+        <rename/>
+      </field>      <field>        <name>reissued_ach_transactions</name>
+        <rename/>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>    <cluster_schema/>
     <remotesteps>
       <input>
       </input>
@@ -881,98 +2217,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>256</yloc>
+      <xloc>576</xloc>
+      <yloc>656</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
 
   <step>
-    <name>Sort decryptx</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
-      <prefix>out</prefix>
-      <sort_size>1000000</sort_size>
-      <free_memory/>
-      <compress>N</compress>
-      <compress_variable/>
-      <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>cardconex_acct_id</name>
-        <ascending>Y</ascending>
-        <case_sensitive>Y</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>160</xloc>
-      <yloc>160</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Sort payconex</name>
-    <type>SortRows</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
-      <prefix>out</prefix>
-      <sort_size>1000000</sort_size>
-      <free_memory/>
-      <compress>N</compress>
-      <compress_variable/>
-      <unique_rows>N</unique_rows>
-    <fields>
-      <field>
-        <name>cardconex_acct_id</name>
-        <ascending>Y</ascending>
-        <case_sensitive>Y</case_sensitive>
-        <collator_enabled>N</collator_enabled>
-        <collator_strength>0</collator_strength>
-        <presorted>N</presorted>
-      </field>
-    </fields>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>48</yloc>
-      <draw>Y</draw>
-    </GUI>
-    </step>
-
-  <step>
-    <name>Sort rows</name>
+    <name>sort_01</name>
     <type>SortRows</type>
     <description/>
     <distribute>N</distribute>
@@ -1991,8 +3243,134 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>784</xloc>
+      <xloc>576</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_billing</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>cardconex_acct_id</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_decryptx</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>cardconex_acct_id</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>160</xloc>
       <yloc>160</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>sort_payconex</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+      <directory>&#x25;&#x25;java.io.tmpdir&#x25;&#x25;</directory>
+      <prefix>out</prefix>
+      <sort_size>1000000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>cardconex_acct_id</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2097,7 +3475,7 @@
     <name>truncate_f_auto_billing_complete_to_1024_chars</name>
     <type>ScriptValueMod</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -2123,8 +3501,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>976</xloc>
-      <yloc>160</yloc>
+      <xloc>576</xloc>
+      <yloc>448</yloc>
       <draw>Y</draw>
     </GUI>
     </step>
@@ -2663,8 +4041,656 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1216</xloc>
-      <yloc>160</yloc>
+      <xloc>896</xloc>
+      <yloc>448</yloc>
+      <draw>Y</draw>
+    </GUI>
+    </step>
+
+  <step>
+    <name>update_f_auto_billing_complete_shieldconex</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>SUW_SRVR_14</connection>
+    <schema>&#x24;&#x7b;dest_schema&#x7d;</schema>
+    <table>f_auto_billing_complete_shieldconex</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>bill_to_id</column_name>
+          <stream_name>bill_to_id</stream_name>
+        </field>
+        <field>
+          <column_name>bill_to_name</column_name>
+          <stream_name>bill_to_name</stream_name>
+        </field>
+        <field>
+          <column_name>collection_method</column_name>
+          <stream_name>collection_method</stream_name>
+        </field>
+        <field>
+          <column_name>start_date</column_name>
+          <stream_name>start_date</stream_name>
+        </field>
+        <field>
+          <column_name>vintage_v2</column_name>
+          <stream_name>vintage_v2</stream_name>
+        </field>
+        <field>
+          <column_name>hold_bill</column_name>
+          <stream_name>hold_bill</stream_name>
+        </field>
+        <field>
+          <column_name>segment_intacct</column_name>
+          <stream_name>segment_intacct</stream_name>
+        </field>
+        <field>
+          <column_name>segment_now</column_name>
+          <stream_name>segment_now</stream_name>
+        </field>
+        <field>
+          <column_name>org_now</column_name>
+          <stream_name>org_now</stream_name>
+        </field>
+        <field>
+          <column_name>chain_now</column_name>
+          <stream_name>chain_now</stream_name>
+        </field>
+        <field>
+          <column_name>industry_now</column_name>
+          <stream_name>industry_now</stream_name>
+        </field>
+        <field>
+          <column_name>dba_name</column_name>
+          <stream_name>dba_name</stream_name>
+        </field>
+        <field>
+          <column_name>year_mon</column_name>
+          <stream_name>year_mon</stream_name>
+        </field>
+        <field>
+          <column_name>cardconex_acct_id</column_name>
+          <stream_name>cardconex_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>cardconex_acct_name</column_name>
+          <stream_name>cardconex_acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>payconex_acct_id</column_name>
+          <stream_name>payconex_acct_id</stream_name>
+        </field>
+        <field>
+          <column_name>payconex_acct_name</column_name>
+          <stream_name>payconex_acct_name</stream_name>
+        </field>
+        <field>
+          <column_name>payconex_acct_ids</column_name>
+          <stream_name>payconex_acct_ids</stream_name>
+        </field>
+        <field>
+          <column_name>pci_monthly_charge</column_name>
+          <stream_name>pci_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>pci_non_compliance_charge</column_name>
+          <stream_name>pci_non_compliance_charge</stream_name>
+        </field>
+        <field>
+          <column_name>shieldconex_monthly_charge</column_name>
+          <stream_name>shieldconex_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>shieldconex_transaction_charge</column_name>
+          <stream_name>shieldconex_transaction_charge</stream_name>
+        </field>
+        <field>
+          <column_name>shieldconex_monthly_minimum_charge</column_name>
+          <stream_name>shieldconex_monthly_minimum_charge</stream_name>
+        </field>
+        <field>
+          <column_name>shieldconex_fields_charge</column_name>
+          <stream_name>shieldconex_fields_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_encryption_charge</column_name>
+          <stream_name>p2pe_encryption_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_token_flat_monthly_charge</column_name>
+          <stream_name>p2pe_token_flat_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_token_flat_charge</column_name>
+          <stream_name>p2pe_token_flat_charge</stream_name>
+        </field>
+        <field>
+          <column_name>achworks_credit_charge</column_name>
+          <stream_name>achworks_credit_charge</stream_name>
+        </field>
+        <field>
+          <column_name>achworks_per_trans_charge</column_name>
+          <stream_name>achworks_per_trans_charge</stream_name>
+        </field>
+        <field>
+          <column_name>ach_returnerror_charge</column_name>
+          <stream_name>ach_returnerror_charge</stream_name>
+        </field>
+        <field>
+          <column_name>ach_noc_message_charge</column_name>
+          <stream_name>ach_noc_message_charge</stream_name>
+        </field>
+        <field>
+          <column_name>achworks_monthly_charge</column_name>
+          <stream_name>achworks_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>ach_sale_volume_charge</column_name>
+          <stream_name>ach_sale_volume_charge</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_charge</column_name>
+          <stream_name>cc_sale_charge</stream_name>
+        </field>
+        <field>
+          <column_name>group_charge</column_name>
+          <stream_name>group_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_reissued_charge</column_name>
+          <stream_name>gw_reissued_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_reissued_ach_trans_charge</column_name>
+          <stream_name>gw_reissued_ach_trans_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_token_charge</column_name>
+          <stream_name>p2pe_token_charge</stream_name>
+        </field>
+        <field>
+          <column_name>apriva_monthly_charge</column_name>
+          <stream_name>apriva_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>file_transfer_monthly_charge</column_name>
+          <stream_name>file_transfer_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>misc_monthly_charge</column_name>
+          <stream_name>misc_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>pc_account_updater_monthly_charge</column_name>
+          <stream_name>pc_account_updater_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>pci_scans_monthly_charge</column_name>
+          <stream_name>pci_scans_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>card_convenience_charge</column_name>
+          <stream_name>card_convenience_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_monthly_charge</column_name>
+          <stream_name>gw_monthly_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_auth_charge</column_name>
+          <stream_name>gw_per_auth_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_auth_decline_charge</column_name>
+          <stream_name>gw_per_auth_decline_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_refund_charge</column_name>
+          <stream_name>gw_per_refund_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_credit_charge</column_name>
+          <stream_name>gw_per_credit_charge</stream_name>
+        </field>
+        <field>
+          <column_name>gw_per_token_charge</column_name>
+          <stream_name>gw_per_token_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_activated_charge</column_name>
+          <stream_name>p2pe_device_activated_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_activating_charge</column_name>
+          <stream_name>p2pe_device_activating_charge</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_device_stored_charge</column_name>
+          <stream_name>p2pe_device_stored_charge</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_credit_fee</column_name>
+          <stream_name>pricing_ach_credit_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_discount_rate</column_name>
+          <stream_name>pricing_ach_discount_rate</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_monthly_fee</column_name>
+          <stream_name>pricing_ach_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_noc_fee</column_name>
+          <stream_name>pricing_ach_noc_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_per_gw_trans_fee</column_name>
+          <stream_name>pricing_ach_per_gw_trans_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_return_error_fee</column_name>
+          <stream_name>pricing_ach_return_error_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_ach_transaction_fee</column_name>
+          <stream_name>pricing_ach_transaction_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_bluefin_gateway_discount_rate</column_name>
+          <stream_name>pricing_bluefin_gateway_discount_rate</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_file_transfer_monthly_fee</column_name>
+          <stream_name>pricing_file_transfer_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gateway_monthly_fee</column_name>
+          <stream_name>pricing_gateway_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_group_tag_fee</column_name>
+          <stream_name>pricing_group_tag_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_per_auth_decline_fee</column_name>
+          <stream_name>pricing_gw_per_auth_decline_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_per_transaction_fee</column_name>
+          <stream_name>pricing_per_transaction_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_per_credit_fee</column_name>
+          <stream_name>pricing_gw_per_credit_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_per_refund_fee</column_name>
+          <stream_name>pricing_gw_per_refund_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_per_sale_fee</column_name>
+          <stream_name>pricing_gw_per_sale_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_per_token_fee</column_name>
+          <stream_name>pricing_gw_per_token_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_gw_reissued_fee</column_name>
+          <stream_name>pricing_gw_reissued_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_misc_monthly_fee</column_name>
+          <stream_name>pricing_misc_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_device_activated_fee</column_name>
+          <stream_name>pricing_p2pe_device_activated_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_device_activating_fee</column_name>
+          <stream_name>pricing_p2pe_device_activating_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_device_stored_fee</column_name>
+          <stream_name>pricing_p2pe_device_stored_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_encryption_fee</column_name>
+          <stream_name>pricing_p2pe_encryption_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_monthly_flat_fee</column_name>
+          <stream_name>pricing_p2pe_monthly_flat_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_one_time_key_injection_fee</column_name>
+          <stream_name>pricing_one_time_key_injection_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_p2pe_tokenization_fee</column_name>
+          <stream_name>pricing_p2pe_tokenization_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_pci_scans_monthly_fee</column_name>
+          <stream_name>pricing_pci_scans_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_pc_acct_updater_fee</column_name>
+          <stream_name>pricing_pc_acct_updater_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pci_compliance_fee</column_name>
+          <stream_name>pci_compliance_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pci_non_compliance_fee</column_name>
+          <stream_name>pci_non_compliance_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_shieldconex_monthly_fee</column_name>
+          <stream_name>pricing_shieldconex_monthly_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_shieldconex_transaction_fee</column_name>
+          <stream_name>pricing_shieldconex_transaction_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_shieldconex_fields_fee</column_name>
+          <stream_name>pricing_shieldconex_fields_fee</stream_name>
+        </field>
+        <field>
+          <column_name>pricing_shieldconex_monthly_minimum_fee</column_name>
+          <stream_name>pricing_shieldconex_monthly_minimum_fee</stream_name>
+        </field>
+        <field>
+          <column_name>total_good_tokenized</column_name>
+          <stream_name>total_good_tokenized</stream_name>
+        </field>
+        <field>
+          <column_name>total_bad_tokenized</column_name>
+          <stream_name>total_bad_tokenized</stream_name>
+        </field>
+        <field>
+          <column_name>total_good_detokenized</column_name>
+          <stream_name>total_good_detokenized</stream_name>
+        </field>
+        <field>
+          <column_name>total_bad_detokenized</column_name>
+          <stream_name>total_bad_detokenized</stream_name>
+        </field>
+        <field>
+          <column_name>total_good_tokenized_fields</column_name>
+          <stream_name>total_good_tokenized_fields</stream_name>
+        </field>
+        <field>
+          <column_name>total_bad_tokenized_fields</column_name>
+          <stream_name>total_bad_tokenized_fields</stream_name>
+        </field>
+        <field>
+          <column_name>total_good_detokenized_fields</column_name>
+          <stream_name>total_good_detokenized_fields</stream_name>
+        </field>
+        <field>
+          <column_name>total_bad_detokenized_fields</column_name>
+          <stream_name>total_bad_detokenized_fields</stream_name>
+        </field>
+        <field>
+          <column_name>decryption_count</column_name>
+          <stream_name>decryption_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_activated_count</column_name>
+          <stream_name>device_activated_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_activating_count</column_name>
+          <stream_name>device_activating_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_stored_count</column_name>
+          <stream_name>device_stored_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_other_count</column_name>
+          <stream_name>device_other_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_activating_activated_count</column_name>
+          <stream_name>device_activating_activated_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_stored_activated_count</column_name>
+          <stream_name>device_stored_activated_count</stream_name>
+        </field>
+        <field>
+          <column_name>device_other_activated_count</column_name>
+          <stream_name>device_other_activated_count</stream_name>
+        </field>
+        <field>
+          <column_name>user_count</column_name>
+          <stream_name>user_count</stream_name>
+        </field>
+        <field>
+          <column_name>group_count</column_name>
+          <stream_name>group_count</stream_name>
+        </field>
+        <field>
+          <column_name>cc_auth_trans</column_name>
+          <stream_name>cc_auth_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_auth_vol</column_name>
+          <stream_name>cc_auth_vol</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_trans</column_name>
+          <stream_name>cc_sale_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_vol</column_name>
+          <stream_name>cc_sale_vol</stream_name>
+        </field>
+        <field>
+          <column_name>cc_ref_trans</column_name>
+          <stream_name>cc_ref_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_ref_vol</column_name>
+          <stream_name>cc_ref_vol</stream_name>
+        </field>
+        <field>
+          <column_name>cc_credit_trans</column_name>
+          <stream_name>cc_credit_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_credit_vol</column_name>
+          <stream_name>cc_credit_vol</stream_name>
+        </field>
+        <field>
+          <column_name>cc_sale_decline_trans</column_name>
+          <stream_name>cc_sale_decline_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_auth_decline_trans</column_name>
+          <stream_name>cc_auth_decline_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_batches</column_name>
+          <stream_name>cc_batches</stream_name>
+        </field>
+        <field>
+          <column_name>cc_keyed_trans</column_name>
+          <stream_name>cc_keyed_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_keyed_vol</column_name>
+          <stream_name>cc_keyed_vol</stream_name>
+        </field>
+        <field>
+          <column_name>cc_swiped_trans</column_name>
+          <stream_name>cc_swiped_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_swiped_vol</column_name>
+          <stream_name>cc_swiped_vol</stream_name>
+        </field>
+        <field>
+          <column_name>ach_sale_trans</column_name>
+          <stream_name>ach_sale_trans</stream_name>
+        </field>
+        <field>
+          <column_name>ach_sale_vol</column_name>
+          <stream_name>ach_sale_vol</stream_name>
+        </field>
+        <field>
+          <column_name>ach_credit_trans</column_name>
+          <stream_name>ach_credit_trans</stream_name>
+        </field>
+        <field>
+          <column_name>ach_credit_vol</column_name>
+          <stream_name>ach_credit_vol</stream_name>
+        </field>
+        <field>
+          <column_name>ach_batches</column_name>
+          <stream_name>ach_batches</stream_name>
+        </field>
+        <field>
+          <column_name>ach_returns</column_name>
+          <stream_name>ach_returns</stream_name>
+        </field>
+        <field>
+          <column_name>ach_errors</column_name>
+          <stream_name>ach_errors</stream_name>
+        </field>
+        <field>
+          <column_name>ach_noc_messages</column_name>
+          <stream_name>ach_noc_messages</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_trans</column_name>
+          <stream_name>p2pe_auth_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_vol</column_name>
+          <stream_name>p2pe_auth_vol</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_trans</column_name>
+          <stream_name>p2pe_sale_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_vol</column_name>
+          <stream_name>p2pe_sale_vol</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_refund_trans</column_name>
+          <stream_name>p2pe_refund_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_refund_vol</column_name>
+          <stream_name>p2pe_refund_vol</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_credit_trans</column_name>
+          <stream_name>p2pe_credit_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_credit_vol</column_name>
+          <stream_name>p2pe_credit_vol</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_sale_decline_trans</column_name>
+          <stream_name>p2pe_sale_decline_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_auth_decline_trans</column_name>
+          <stream_name>p2pe_auth_decline_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_active_device_trans</column_name>
+          <stream_name>p2pe_active_device_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_inactive_device_trans</column_name>
+          <stream_name>p2pe_inactive_device_trans</stream_name>
+        </field>
+        <field>
+          <column_name>tokens_stored</column_name>
+          <stream_name>tokens_stored</stream_name>
+        </field>
+        <field>
+          <column_name>batch_files_processed</column_name>
+          <stream_name>batch_files_processed</stream_name>
+        </field>
+        <field>
+          <column_name>cc_capture_trans</column_name>
+          <stream_name>cc_capture_trans</stream_name>
+        </field>
+        <field>
+          <column_name>cc_capture_vol</column_name>
+          <stream_name>cc_capture_vol</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_capture_trans</column_name>
+          <stream_name>p2pe_capture_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_capture_vol</column_name>
+          <stream_name>p2pe_capture_vol</stream_name>
+        </field>
+        <field>
+          <column_name>combined_decline_trans</column_name>
+          <stream_name>combined_decline_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_declined_trans</column_name>
+          <stream_name>p2pe_declined_trans</stream_name>
+        </field>
+        <field>
+          <column_name>p2pe_tokens_stored</column_name>
+          <stream_name>p2pe_tokens_stored</stream_name>
+        </field>
+        <field>
+          <column_name>reissued_cc_transactions</column_name>
+          <stream_name>reissued_cc_transactions</stream_name>
+        </field>
+        <field>
+          <column_name>reissued_ach_transactions</column_name>
+          <stream_name>reissued_ach_transactions</stream_name>
+        </field>
+    </fields>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>992</xloc>
+      <yloc>656</yloc>
       <draw>Y</draw>
     </GUI>
     </step>

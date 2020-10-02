@@ -600,7 +600,7 @@
       <schema_name/>
     </partitioning>
     <connection>SUW_SRVR_14</connection>
-    <sql>SELECT &#xa;     asst.accountid AS acct_id&#xa;    ,asst.fee_name__c&#xa;    ,fm.fee_name&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_credit_fee&#x27;&#x29;                AS ach_credit_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_monthly_fee&#x27;&#x29;               AS ach_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_noc_fee&#x27;&#x29;                   AS ach_noc_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_per_gw_trans_fee&#x27;&#x29;          AS ach_per_gw_trans_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_return_error_fee&#x27;&#x29;          AS ach_return_error_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_transaction_fee&#x27;&#x29;           AS ach_transaction_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;bfach_discount_rate&#x27;&#x29;           AS bfach_discount_rate&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;bluefin_gateway_discount_rate&#x27;&#x29; AS bluefin_gateway_discount_rate&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;file_transfer_monthly_fee&#x27;&#x29;     AS file_transfer_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gateway_monthly_fee&#x27;&#x29;           AS gateway_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;group_tag_fee&#x27;&#x29;                 AS group_tag_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_auth_decline_fee&#x27;&#x29;       AS gw_per_auth_decline_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_credit_fee&#x27;&#x29;             AS gw_per_credit_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_refund_fee&#x27;&#x29;             AS gw_per_refund_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_sale_fee&#x27;&#x29;               AS gw_per_sale_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_token_fee&#x27;&#x29;              AS gw_per_token_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_reissued_fee&#x27;&#x29;               AS gw_reissued_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;misc_monthly_fees&#x27;&#x29;             AS misc_monthly_fees&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;one_time_key_injection_fees&#x27;&#x29;   AS one_time_key_injection_fees&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_activated&#x27;&#x29;         AS p2pe_device_activated&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_activating_fee&#x27;&#x29;    AS p2pe_device_activating_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_stored_fee&#x27;&#x29;        AS p2pe_device_stored_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_encryption_fee&#x27;&#x29;           AS p2pe_encryption_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_monthly_flat_fee&#x27;&#x29;         AS p2pe_monthly_flat_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_tokenization_fee&#x27;&#x29;         AS p2pe_tokenization_fee&#xa; -- ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_transaction_fee&#x27;&#x29;          AS p2pe_transaction_fee          -- is this fee being billed&#x3f;  there exists no column for it in alpha_stg_cardconex_account_column&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_compliance_fee&#x27;&#x29;            AS pci_compliance_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_non_compliance_fee&#x27;&#x29;        AS pci_non_compliance_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_scans_monthly_fee&#x27;&#x29;         AS pci_scans_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;per_transaction_fee&#x27;&#x29;           AS per_transaction_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;shieldconex_monthly_fee&#x27;&#x29;       AS shieldconex_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;shieldconex_monthly_minimum&#x27;&#x29;   AS shieldconex_monthly_minimum&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;shieldconex_transaction_fee&#x27;&#x29;   AS shieldconex_transaction_fee&#xa;  FROM sales_force.asset          AS asst&#xa;  LEFT JOIN sales_force.fee_map   AS fm&#xa;    ON asst.fee_name__c &#x3d; fm.fee_name&#xa; WHERE fee_name__c IS NOT NULL&#xa; ORDER BY accountid</sql>
+    <sql>SELECT &#xa;     asst.accountid AS acct_id&#xa;    ,asst.fee_name__c&#xa;    ,fm.fee_name&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_credit_fee&#x27;&#x29;                AS ach_credit_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_monthly_fee&#x27;&#x29;               AS ach_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_noc_fee&#x27;&#x29;                   AS ach_noc_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_per_gw_trans_fee&#x27;&#x29;          AS ach_per_gw_trans_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_return_error_fee&#x27;&#x29;          AS ach_return_error_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;ach_transaction_fee&#x27;&#x29;           AS ach_transaction_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;bfach_discount_rate&#x27;&#x29;           AS bfach_discount_rate&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;bluefin_gateway_discount_rate&#x27;&#x29; AS bluefin_gateway_discount_rate&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;file_transfer_monthly_fee&#x27;&#x29;     AS file_transfer_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gateway_monthly_fee&#x27;&#x29;           AS gateway_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;group_tag_fee&#x27;&#x29;                 AS group_tag_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_auth_decline_fee&#x27;&#x29;       AS gw_per_auth_decline_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_credit_fee&#x27;&#x29;             AS gw_per_credit_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_refund_fee&#x27;&#x29;             AS gw_per_refund_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_sale_fee&#x27;&#x29;               AS gw_per_sale_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_per_token_fee&#x27;&#x29;              AS gw_per_token_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;gw_reissued_fee&#x27;&#x29;               AS gw_reissued_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;misc_monthly_fees&#x27;&#x29;             AS misc_monthly_fees&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;one_time_key_injection_fees&#x27;&#x29;   AS one_time_key_injection_fees&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_activated&#x27;&#x29;         AS p2pe_device_activated&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_activating_fee&#x27;&#x29;    AS p2pe_device_activating_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_device_stored_fee&#x27;&#x29;        AS p2pe_device_stored_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_encryption_fee&#x27;&#x29;           AS p2pe_encryption_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_monthly_flat_fee&#x27;&#x29;         AS p2pe_monthly_flat_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_tokenization_fee&#x27;&#x29;         AS p2pe_tokenization_fee&#xa; -- ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;p2pe_transaction_fee&#x27;&#x29;          AS p2pe_transaction_fee          -- is this fee being billed&#x3f;  there exists no column for it in alpha_stg_cardconex_account_column&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_compliance_fee&#x27;&#x29;            AS pci_compliance_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;payconex_app_exchange_fee&#x27;&#x29;     AS payconex_app_exchange_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_non_compliance_fee&#x27;&#x29;        AS pci_non_compliance_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;pci_scans_monthly_fee&#x27;&#x29;         AS pci_scans_monthly_fee&#xa;    ,COALESCE&#x28;asst.fee_amount__c, 0&#x29; &#x2a; &#x28;fm.fee&#x3d;&#x27;per_transaction_fee&#x27;&#x29;           AS per_transaction_fee&#xa;  FROM sales_force.asset          AS asst&#xa;  LEFT JOIN sales_force.fee_map   AS fm&#xa;    ON asst.fee_name__c &#x3d; fm.fee_name&#xa; WHERE fee_name__c IS NOT NULL&#xa; ORDER BY accountid&#xa;&#xa;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -796,6 +796,12 @@
           <valuefield/>
         </field>
         <field>
+          <aggregate>payconex_app_exchange_fee</aggregate>
+          <subject>payconex_app_exchange_fee</subject>
+          <type>SUM</type>
+          <valuefield/>
+        </field>
+        <field>
           <aggregate>pci_compliance_fee</aggregate>
           <subject>pci_compliance_fee</subject>
           <type>SUM</type>
@@ -819,24 +825,6 @@
           <type>SUM</type>
           <valuefield/>
         </field>
-        <field>
-          <aggregate>shieldconex_monthly_fee</aggregate>
-          <subject>shieldconex_monthly_fee</subject>
-          <type>SUM</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>shieldconex_monthly_minimum</aggregate>
-          <subject>shieldconex_monthly_minimum</subject>
-          <type>SUM</type>
-          <valuefield/>
-        </field>
-        <field>
-          <aggregate>shieldconex_transaction_fee</aggregate>
-          <subject>shieldconex_transaction_fee</subject>
-          <type>SUM</type>
-          <valuefield/>
-        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
@@ -856,7 +844,7 @@
     <name>merge_account_and_asset_data</name>
     <type>MergeJoin</type>
     <description/>
-    <distribute>Y</distribute>
+    <distribute>N</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -1116,6 +1104,10 @@
           <stream_name>parent_acct_id</stream_name>
         </field>
         <field>
+          <column_name>payconex_app_exchange_fee</column_name>
+          <stream_name>payconex_app_exchange_fee</stream_name>
+        </field>
+        <field>
           <column_name>pci_compliance_fee</column_name>
           <stream_name>pci_compliance_fee</stream_name>
         </field>
@@ -1147,18 +1139,6 @@
           <column_name>referring_organization_text</column_name>
           <stream_name>referring_organization_text</stream_name>
         </field>
-        <field>
-          <column_name>shieldconex_monthly_fee</column_name>
-          <stream_name>shieldconex_monthly_fee</stream_name>
-        </field>
-        <field>
-          <column_name>shieldconex_monthly_minimum</column_name>
-          <stream_name>shieldconex_monthly_minimum</stream_name>
-        </field>
-        <field>
-          <column_name>shieldconex_transaction_fee</column_name>
-          <stream_name>shieldconex_transaction_fee</stream_name>
-        </field>
     </fields>
     <cluster_schema/>
     <remotesteps>
@@ -1168,7 +1148,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>992</xloc>
+      <xloc>1008</xloc>
       <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1186,66 +1166,123 @@
       <schema_name/>
     </partitioning>
     <fields>      <field>        <name>accountnumber</name>
+        <rename/>
       </field>      <field>        <name>acct_id</name>
+        <rename/>
       </field>      <field>        <name>acct_name</name>
+        <rename/>
       </field>      <field>        <name>ach_credit_fee</name>
+        <rename/>
       </field>      <field>        <name>ach_monthly_fee</name>
+        <rename/>
       </field>      <field>        <name>ach_noc_fee</name>
+        <rename/>
       </field>      <field>        <name>ach_per_gw_trans_fee</name>
+        <rename/>
       </field>      <field>        <name>ach_return_error_fee</name>
+        <rename/>
       </field>      <field>        <name>ach_transaction_fee</name>
+        <rename/>
       </field>      <field>        <name>bfach_discount_rate</name>
+        <rename/>
       </field>      <field>        <name>billing_frequency</name>
+        <rename/>
       </field>      <field>        <name>billing_situation</name>
+        <rename/>
       </field>      <field>        <name>bluefin_contract_start_date</name>
+        <rename/>
       </field>      <field>        <name>bluefin_gateway_discount_rate</name>
+        <rename/>
       </field>      <field>        <name>cardconex_status</name>
+        <rename/>
       </field>      <field>        <name>closure_date</name>
+        <rename/>
       </field>      <field>        <name>date_agreement_signed</name>
+        <rename/>
       </field>      <field>        <name>date_modified</name>
+        <rename/>
       </field>      <field>        <name>date_updated</name>
+        <rename/>
       </field>      <field>        <name>dba_name</name>
+        <rename/>
       </field>      <field>        <name>dba_street</name>
+        <rename/>
       </field>      <field>        <name>dba_city</name>
+        <rename/>
       </field>      <field>        <name>dba_state</name>
+        <rename/>
       </field>      <field>        <name>dba_postal_code</name>
+        <rename/>
       </field>      <field>        <name>dba_phone</name>
+        <rename/>
       </field>      <field>        <name>file_transfer_monthly_fee</name>
+        <rename/>
       </field>      <field>        <name>gateway_monthly_fee</name>
+        <rename/>
       </field>      <field>        <name>group_tag_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_per_auth_decline_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_per_credit_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_per_refund_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_per_sale_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_per_token_fee</name>
+        <rename/>
       </field>      <field>        <name>gw_reissued_fee</name>
+        <rename/>
       </field>      <field>        <name>hold_billing</name>
+        <rename/>
       </field>      <field>        <name>industry</name>
+        <rename/>
       </field>      <field>        <name>legacy_id</name>
+        <rename/>
       </field>      <field>        <name>misc_monthly_fees</name>
+        <rename/>
       </field>      <field>        <name>months_in_business</name>
+        <rename/>
       </field>      <field>        <name>one_time_key_injection_fees</name>
+        <rename/>
       </field>      <field>        <name>owner_firstname</name>
+        <rename/>
       </field>      <field>        <name>owner_lastname</name>
+        <rename/>
       </field>      <field>        <name>owner_name</name>
+        <rename/>
       </field>      <field>        <name>p2pe_device_activated</name>
+        <rename/>
       </field>      <field>        <name>p2pe_device_activating_fee</name>
+        <rename/>
       </field>      <field>        <name>p2pe_device_stored_fee</name>
+        <rename/>
       </field>      <field>        <name>p2pe_encryption_fee</name>
+        <rename/>
       </field>      <field>        <name>p2pe_monthly_flat_fee</name>
+        <rename/>
       </field>      <field>        <name>p2pe_tokenization_fee</name>
+        <rename/>
+      </field>      <field>        <name>payconex_app_exchange_fee</name>
+        <rename/>
       </field>      <field>        <name>parent_acct_id</name>
+        <rename/>
       </field>      <field>        <name>pci_compliance_fee</name>
+        <rename/>
       </field>      <field>        <name>pci_non_compliance_fee</name>
+        <rename/>
       </field>      <field>        <name>pci_scans_monthly_fee</name>
+        <rename/>
       </field>      <field>        <name>per_transaction_fee</name>
+        <rename/>
       </field>      <field>        <name>referring_organization_text</name>
+        <rename/>
       </field>      <field>        <name>segment</name>
-      </field>      <field>        <name>shieldconex_monthly_fee</name>
-      </field>      <field>        <name>shieldconex_monthly_minimum</name>
-      </field>      <field>        <name>shieldconex_transaction_fee</name>
+        <rename/>
       </field>      <field>        <name>sic</name>
+        <rename/>
       </field>      <field>        <name>stop_billing</name>
+        <rename/>
       </field>        <select_unspecified>N</select_unspecified>
     </fields>    <cluster_schema/>
     <remotesteps>
@@ -1431,6 +1468,12 @@
         <set_empty_string>N</set_empty_string>
         </field>
       <field>
+        <name>payconex_app_exchange_fee</name>
+        <value>0</value>
+        <mask/>
+        <set_empty_string>N</set_empty_string>
+        </field>
+      <field>
         <name>pci_compliance_fee</name>
         <value>0</value>
         <mask/>
@@ -1454,24 +1497,6 @@
         <mask/>
         <set_empty_string>N</set_empty_string>
         </field>
-      <field>
-        <name>shieldconex_monthly_fee</name>
-        <value>0</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-        </field>
-      <field>
-        <name>shieldconex_monthly_minimum</name>
-        <value>0</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-        </field>
-      <field>
-        <name>shieldconex_transaction_fee</name>
-        <value>0</value>
-        <mask/>
-        <set_empty_string>N</set_empty_string>
-        </field>
       </fields>
     <cluster_schema/>
     <remotesteps>
@@ -1481,7 +1506,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>784</xloc>
+      <xloc>800</xloc>
       <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
