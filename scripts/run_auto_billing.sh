@@ -126,6 +126,16 @@ read -p "press enter to run rpt_billing.ktr..."
 # ############################## Update auto_billing_dw.f_auto_billing_dw.payconex_acct_id ############################
 mysql auto_billing_dw < /home/svc-dbwh/repositories/auto_billing/schema/update_payconex_acct_id.sql
 
+
+# ############################## Calculate ShieldConex Charges and Fees ###############################################
+mysql -e"CALL update_shieldconex_fees_and_charges" auto_billing_dw
+
+# ############################## Calculate bill_to_id #################################################################
+mysql -e"CALL update_bill_to_id()" auto_billing_dw
+
+# ############################## Add Demographics Coumns ##############################################################
+mysql -e"CALL update_billing_demographics" auto_billing_dw
+
 # define output filename
 current_timestamp=$( date +"%Y%m%d_%H%M%S" )
 output_file="auto_billing_complete_$current_timestamp.txt"
