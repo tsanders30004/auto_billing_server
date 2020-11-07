@@ -445,31 +445,10 @@
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
-    <notepad>
-      <note>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_errors_default&#x2f;billing_errors_</note>
-      <xloc>480</xloc>
-      <yloc>704</yloc>
-      <width>393</width>
-      <heigth>26</heigth>
-      <fontname>Courier</fontname>
-      <fontsize>13</fontsize>
-      <fontbold>N</fontbold>
-      <fontitalic>N</fontitalic>
-      <fontcolorred>0</fontcolorred>
-      <fontcolorgreen>0</fontcolorgreen>
-      <fontcolorblue>0</fontcolorblue>
-      <backgroundcolorred>255</backgroundcolorred>
-      <backgroundcolorgreen>205</backgroundcolorgreen>
-      <backgroundcolorblue>112</backgroundcolorblue>
-      <bordercolorred>100</bordercolorred>
-      <bordercolorgreen>100</bordercolorgreen>
-      <bordercolorblue>100</bordercolorblue>
-      <drawshadow>Y</drawshadow>
-    </notepad>
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
-    <server>suw-srvr-14.capitalpayments.local</server>
+    <server>suw-srvr-14</server>
     <type>MYSQL</type>
     <access>Native</access>
     <database>information_schema</database>
@@ -3146,7 +3125,7 @@
     <fileNameField/>
     <create_parent_folder>Y</create_parent_folder>
     <file>
-      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_errors_default&#x2f;dw_f_billing_month</name>
+      <name>&#x24;&#x7b;dir_errors_default&#x7d;dw_f_billing_month</name>
       <is_command>N</is_command>
       <servlet_output>Y</servlet_output>
       <do_not_open_new_file_init>N</do_not_open_new_file_init>
