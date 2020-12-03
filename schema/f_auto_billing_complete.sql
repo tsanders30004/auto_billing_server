@@ -124,5 +124,5 @@ SELECT
     COALESCE(reissued_cc_transactions, '')                AS reissued_cc_transactions,
     COALESCE(reissued_ach_transactions, '')               AS reissued_ach_transactions,
     COALESCE(date_updated, '')                            AS date_updated
-FROM auto_billing_dw.f_auto_billing_complete 
+FROM auto_billing_dw.f_auto_billing_complete_shieldconex
 ;

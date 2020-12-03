@@ -2,7 +2,7 @@
 
 # you need to direct the of this file to ~/logs/run_auth_billing.txt
 
-echo Bluefin Payment Systems / Auto Billing 
+echo Bluefin Payment Systems / Auto Billing II 
 echo
 echo PURPOSE:  Import auto billing data and create auto_billing_complete output file.
 echo 
@@ -43,13 +43,13 @@ read -p "press enter to run src_cardconex_account.ktr..."
 # 1 Jun 2020:  Clean up the comments where next month.
 # Output Table:  auto_billing_staging.stg_cardconex_account
 
-cd /home/svc-dbwh/repositories/sales_force/pentaho/trans/
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_cardconex_account_2.ktr
+# cd /home/svc-dbwh/repositories/sales_force/pentaho/trans/
+# /usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/src_cardconex_account_2.ktr
 
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_cardconex_account; set foreign_key_checks=1;"
-mysql -v -v -e"INSERT INTO auto_billing_staging.stg_cardconex_account SELECT * FROM sales_force.test_cardconex_account"
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_cardconex_account; set foreign_key_checks=1;"
+# mysql -v -v -e"INSERT INTO auto_billing_staging.stg_cardconex_account SELECT * FROM sales_force.test_cardconex_account"
 
-read -p "press enter to run src_decryptx_cardconex_map.ktr..."
+# read -p "press enter to run src_decryptx_cardconex_map.ktr..."
 
 # ########## Decryptx Cardconex Map ###################################################################################
 # Input File:    decryptx_cardconex_map.YYYYMMDD.xlsx
@@ -89,78 +89,50 @@ read -p "press enter to show staging summary..."
 
 # ############################## Show Summary #########################################################################
 mysql -v -v -e"call auto_billing_staging.show_input_file_summary;"
-read -p "press enter to run dw_d_pricing.ktr..."
+read -p "press enter to populate auto_billing_dw.f_auto_billing_complete_2..."
 
-########## Pricing ####################################################################################################
-# Output Table:  auto_billing_dw.d_pricing
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.d_pricing; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_pricing.ktr
-read -p "press enter to run dw_d_merchant.ktr..."
+# update auto_billing_dw.f_auto_billing_complete_2
 
-########## Merchant ###################################################################################################
-# Output Table:  auto_billing_dw.d_merchant
-# Note:  Verify that we can always call auto_billing_dw.update_billing_frequency()
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_initialize()"
+read -p "press enter to continue..."
 
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.d_merchant; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_merchant.ktr
-mysql -v -v -e"call auto_billing_dw.update_billing_frequency()"
-read -p "press enter to run dw_f_decryptx_day.ktr..."
+mysql -e"CALL auto_billing_staging.populate_stg_asset()"
+read -p "press enter to continue..."
 
-# ############################## f_decryptx_day #######################################################################
-# Output Tables:  auto_billing_dw.f_decryptx_day_alt and auto_billing_dw.f_decryptx_day
-#                 auto_billing_dw_d_device
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_assets()"
+read -p "press enter to continue..."
 
-mysql -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_decryptx_day_alt; truncate auto_billing_dw.f_decryptx_day; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_decryptx_day.ktr
-read -p "press enter to run dw_d_processor.ktr..."
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_decryptx()"
+read -p "press enter to continue..."
 
-# ############################## d_processor ##########################################################################
-# Output Table:  auto_billing_dw.d_processor (not truncated)
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_payconex()"
+read -p "press enter to continue..."
 
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_d_processor.ktr
-read -p "press enter to dw_f_payconex_day.ktr..."
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_payconex_acct_id"
+read -p "press enter to continue..."
 
-# ############################## f_payconex_day #######################################################################
-# Output Table:  auto_billing_dw.f_payconex_day_alt and auto_billing_dw.f_payconex_day
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_payconex_day_alt; truncate auto_billing_dw.f_payconex_day; set foreign_key_checks=1;"
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_shieldconex"
+read -p "press enter to continue..."
 
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_payconex_day.ktr
-read -p "press enter to run dw_f_billing_month.ktr..."
+mysql -e"CALL auto_billing_dw.update_bill_to_id()"
+read -p "press enter to continue..."
 
-# ############################## f_billing_month ######################################################################
-# Output Table:  auto_billing_dw.f_billing_month_alt and auto_billing_dw.f_billing_month
+mysql -e"CALL auto_billing_dw.f_auto_billing_complete_demographics"
+read -p "press enter to continue..."
 
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_dw.f_billing_month_alt; truncate auto_billing_dw.f_billing_month; set foreign_key_checks=1;"
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/dw_f_billing_month.ktr
-read -p "press enter to run rpt_billing.ktr..."
+SELECT 'auto_billing_dw.f_auto_billing_complete_payconex_acct_id() is obsolete and is now disabled.  Drop this procedure.' AS message;
 
-# ############################## Auto Billing Complete ################################################################
-# Output Table:  auto_billing_dw.f_auto_billing_complete (truncated)
-# Output File:   /home/svc-dbwh/dir_output_default/auto_billing_complete_YYYYMMDD:HHMMSS.txt
-
-/usr/local/install/data-integration/pan.sh -file /home/svc-dbwh/repositories/auto_billing/pentaho/trans/rpt_billing.ktr
-
-# ############################## Update auto_billing_dw.f_auto_billing_dw.payconex_acct_id ############################
-mysql auto_billing_dw < /home/svc-dbwh/repositories/auto_billing/schema/update_payconex_acct_id.sql
-
-
-# ############################## Calculate ShieldConex Charges and Fees ###############################################
-mysql -e"CALL update_shieldconex_fees_and_charges" auto_billing_dw
-
-# ############################## Calculate bill_to_id #################################################################
-mysql -e"CALL update_bill_to_id()" auto_billing_dw
-
-# ############################## Add Demographics Coumns ##############################################################
-mysql -e"CALL update_billing_demographics" auto_billing_dw
+# mysql -e"CALL auto_billing_dw.f_auto_billing_complete_payconex_acct_id()"
+# read -p "press enter to continue..."
 
 # define output filename
 current_timestamp=$( date +"%Y%m%d_%H%M%S" )
 output_file="auto_billing_complete_$current_timestamp.txt"
 
 echo The line below shows the table used to create the output file.
-cat /home/svc-dbwh/repositories/auto_billing/schema/f_auto_billing_complete.sql | grep FROM
+cat /home/svc-dbwh/repositories/auto_billing/schema/f_auto_billing_complete_2.sql | grep FROM
 
-mysql auto_billing_dw < /home/svc-dbwh/repositories/auto_billing/schema/f_auto_billing_complete.sql > /home/svc-dbwh/dir_output_default/$output_file
+mysql auto_billing_dw < /home/svc-dbwh/repositories/auto_billing/schema/f_auto_billing_complete_2.sql > /home/svc-dbwh/dir_output_default/$output_file
 ls -lt  /home/svc-dbwh/dir_output_default/$output_file
 
 # prepare to email the output file.
