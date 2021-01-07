@@ -1,0 +1,4 @@
+# To back up stored procedures, execute the following mysqldump commands.
+# Note:  commands must be executed on suw-srvr-14 due to security.
+mysqldump -u data_warehouse -h suw-srvr-14.capitalpayments.local -p --no-create-db --no-data --routines --no-create-info auto_billing_dw > auto_billing_dw_stored_routines.sql
+mysqldump -u data_warehouse -h suw-srvr-14.capitalpayments.local -p --no-create-db --no-data --routines --no-create-info auto_billing_staging > auto_billing_staging_stored_routines.sql

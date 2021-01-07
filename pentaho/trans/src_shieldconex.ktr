@@ -448,7 +448,7 @@
   </notepads>
   <connection>
     <name>SUW_SRVR_14</name>
-    <server>suw-srvr-14.capitalpayments.local</server>
+    <server>suw-srvr-14</server>
     <type>MYSQL</type>
     <access>Native</access>
     <database>information_schema</database>
@@ -460,7 +460,6 @@
     <index_tablespace/>
     <attributes>
       <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
-      <attribute><code>EXTRA_OPTION_MYSQL.domain</code><attribute>CAPITALPAYMENTS</attribute></attribute>
       <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
       <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
@@ -644,7 +643,7 @@
     <encoding/>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
-      <name>&#x2f;home&#x2f;svc-dbwh&#x2f;dir_source_default</name>
+      <name>&#x2f;home&#x2f;tsanders&#x2f;dir_source_default</name>
       <filemask>&#x5e;clientTransactionSummaryReport_&#x5b;0-9&#x5d;&#x7b;14&#x7d;&#x5c;.csv</filemask>
       <exclude_filemask/>
       <file_required>N</file_required>
@@ -1016,9 +1015,7 @@
       </field>      <field>        <name>TotalGoodTransactionWrite</name>
         <rename>total_good_tokenized</rename>
       </field>      <field>        <name>file_name</name>
-        <rename/>
       </field>      <field>        <name>file_row</name>
-        <rename/>
       </field>        <select_unspecified>N</select_unspecified>
     </fields>    <cluster_schema/>
     <remotesteps>
