@@ -83,6 +83,15 @@ read -p "press enter to run src_payconex_cardconex_map.ktr..."
 mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
 
 $PENTAHO_DIR/pan.sh -file $AUTO_BILLING_REPO/pentaho/trans/src_payconex_cardconex_map.ktr
+
+read -p "press enter to run src_shieldconex.ktr..."
+
+########## ShieldConex ################################################################################################
+# Input File:    clientTransactionSummaryReport_YYYYMMDDHHMMSS.csv
+# Output Table:  auto_billing_staging.stg_shieldconex
+
+/home/tsanders/data-integration-7/pan.sh -file /home/tsanders/repositories/auto_billing/pentaho/trans/src_shieldconex.ktr 
+
 read -p "press enter to verify length of cardconex_acct_id's..."
 
 ########## Check cardconex_acct_id Lengths in Map Files ###############################################################
@@ -159,7 +168,7 @@ CURRENT_TIMESTAMP=$( date +"%Y%m%d_%H%M%S" )
 OUTPUT_FILE=$DIR_OUTPUT_DEFAULT"/auto_billing_complete_$CURRENT_TIMESTAMP.txt"
 
 # ############################## Create the Output File ###############################################################
-mysql auto_billing_dw < $AUTO_BILLING_REPO/schema/f_auto_billing_complete_2.sql > $OUTPUT_FILE 
+mysql auto_billing_dw < $AUTO_BILLING_REPO/schema/f_auto_billing_complete_shieldconex.sql > $OUTPUT_FILE 
 # assume the output file is the most recently-created file in $DIR_OUTPUT_DEFAULT
 fn1=$(ls -t $DIR_OUTPUT_DEFAULT | head -n1)
 

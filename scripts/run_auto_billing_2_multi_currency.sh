@@ -15,24 +15,10 @@ echo
 
 rm -f ~/logs/run_auto_billing.txt 
 
-# Define the billing period; i.e., YYYYMM for the previous month.
-BILLING_PERIOD=$( date -d "$(date +%Y-%m-01) -1 day" +%Y%m )
-
-# Define directory names.
-DIR_SOURCE_DEFAULT="/home/tsanders/dir_source_default"
-DIR_REPO="/home/tsanders/repositories/csv_to_mysql"
-
-# Derive the filenames.
-DCM_FILENAME="$DIR_SOURCE_DEFAULT/decryptx_cardconex_map_$BILLING_PERIOD.csv"
-DDCM_FILENAME="$DIR_SOURCE_DEFAULT/decryptx_device_cardconex_map_$BILLING_PERIOD.csv"
-PCM_FILENAME="$DIR_SOURCE_DEFAULT/payconex_cardconex_map_$BILLING_PERIOD.csv"
-SHIELDCONEX_FILENAME=$DIR_SOURCE_DEFAULT/clientTransactionSummaryReport_$( date -d "$(date +%Y-%m-01) " +%Y%m%d000000 ).csv
-
 echo Confirm that CURRENT VERSIONS of the three map files are present:
 echo -----------------------------------------------------------------
-ls -lt $DCM_FILENAME
-ls -lt $DDCM_FILENAME
-ls -lt $PCM_FILENAME
+ls -lt ~/dir_source_default/*map_??????.csv
+
 echo
 echo Stop here if any of the map files are missing or out-of-date.
 echo
@@ -40,7 +26,7 @@ read -p "press enter to continue..."
 
 echo Confirm that the CURRENT VERSION of the ShieldConex file is present:
 echo --------------------------------------------------------------------
-ls -lt $SHIELDCONEX_FILENAME
+ls -lt ~/dir_source_default/clientTransactionSummaryReport_??????????????.csv
 
 echo
 echo Stop here if the ShieldConex file is  missing or out-of-date, or if more than one file is present.
@@ -65,27 +51,38 @@ read -p "press enter to import map files..."
 # Example:  If today = 2021-01-04, then YYYYMM = 202012.
 # This script will import only the files which correspond to the previous month, even if older files are present.
 
+# Define the billing period; i.e., YYYYMM for the previous month.
+BILLING_PERIOD=$( date -d "$(date +%Y-%m-01) -1 day" +%Y%m )
+
+# Define directory names.
+DIR_SOURCE_DEFAULT="/home/tsanders/dir_source_default"
+DIR_REPO="/home/tsanders/repositories/csv_to_mysql"
+
+# Derive the filenames.
+DCM_FILENAME="$DIR_SOURCE_DEFAULT/decryptx_cardconex_map_$BILLING_PERIOD.csv"
+DDCM_FILENAME="$DIR_SOURCE_DEFAULT/decryptx_device_cardconex_map_$BILLING_PERIOD.csv"
+PCM_FILENAME="$DIR_SOURCE_DEFAULT/payconex_cardconex_map_$BILLING_PERIOD.csv"
+
+echo MAP FILE IMPORT IS DISABLED!!!  EDIT!!!
 # Import the files.
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
-node $DIR_REPO/mysql_import.js auto_billing_staging $DCM_FILENAME
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_cardconex_map; set foreign_key_checks=1;"
+# node $DIR_REPO/mysql_import.js auto_billing_staging $DCM_FILENAME
 read -p "press enter to continue..."
 
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
-node $DIR_REPO/mysql_import.js auto_billing_staging $DDCM_FILENAME
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_decryptx_device_cardconex_map; set foreign_key_checks=1;"
+# node $DIR_REPO/mysql_import.js auto_billing_staging $DDCM_FILENAME
 read -p "press enter to continue..."
 
-mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
-node $DIR_REPO/mysql_import.js auto_billing_staging $PCM_FILENAME 
+# mysql -v -v -e "set foreign_key_checks=0; truncate auto_billing_staging.stg_payconex_cardconex_map; set foreign_key_checks=1;"
+# node $DIR_REPO/mysql_import.js auto_billing_staging $PCM_FILENAME > ~/temp/payconex_cardconex_map.txt
 read -p "press enter to run src_shieldconex.ktr..."
 
+echo SHIELDCONEX IMPORT IS DISABLED!!!  EDIT!!! 
 ########## ShieldConex ################################################################################################
 # Input File:    clientTransactionSummaryReport_YYYYMMDDHHMMSS.csv
 # Output Table:  auto_billing_staging.stg_shieldconex
 
 # /home/tsanders/data-integration-7/pan.sh -file /home/tsanders/repositories/auto_billing/pentaho/trans/src_shieldconex.ktr 
-# mysql -e"SELECT complete_date, MIN(import_timestamp), MAX(import_timestamp) FROM stg_shieldconex" auto_billing_staging
-
-node $DIR_REPO/mysql_import.js auto_billing_staging $SHIELDCONEX_FILENAME
 
 read -p "press enter to verify length of cardconex_acct_id's..."
 
@@ -140,8 +137,6 @@ ls -lt  /home/tsanders/dir_output_default/$output_file
 
 # create the email body.
 cd ~/dir_output_default
-
-fn1=$(ls -t | head -n1)
 
 rm -f ~/temp/msg.txt
 

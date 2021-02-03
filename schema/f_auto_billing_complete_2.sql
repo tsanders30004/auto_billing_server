@@ -18,6 +18,8 @@ SELECT
     ,COALESCE(payconex_acct_id                       , '') AS payconex_acct_id
     ,COALESCE(payconex_acct_name                     , '') AS payconex_acct_name
     ,COALESCE(payconex_acct_ids                      , '') AS payconex_acct_ids
+    ,COALESCE(currency_iso_code                      , '') AS currency_iso_code
+    ,COALESCE(exchange_rate                          , '') AS exchange_rate
     ,COALESCE(pci_monthly_charge                     , '') AS pci_monthly_charge                     
     ,COALESCE(pci_non_compliance_charge              , '') AS pci_non_compliance_charge              
     ,COALESCE(shieldconex_monthly_charge             , '') AS shieldconex_monthly_charge             
