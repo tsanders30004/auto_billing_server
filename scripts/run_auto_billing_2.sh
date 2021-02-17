@@ -126,6 +126,9 @@ read -p "press enter to continue..."
 mysql -e"CALL auto_billing_dw.f_auto_billing_complete_demographics"
 read -p "press enter to continue..."
 
+mysql -e"CALL auto_billing_history.update_history"
+read -p "press enter to continue..."
+
 # define output filename
 current_timestamp=$( date +"%Y%m%d_%H%M%S" )
 output_file="auto_billing_complete_$current_timestamp.txt"
