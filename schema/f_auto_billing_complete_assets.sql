@@ -42,6 +42,7 @@ BEGIN
           ,pricing_shieldconex_monthly_fee            = asst.shieldconex_monthly_fee 
           ,pricing_shieldconex_monthly_minimum_fee    = asst.shieldconex_monthly_minimum 
           ,pricing_shieldconex_transaction_fee        = asst.shieldconex_transaction_fee 
+          ,pricing_tokenization_fee                   = asst.tokenization_fee 
      WHERE TRUE 
     ;
     
