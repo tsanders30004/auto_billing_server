@@ -20,7 +20,6 @@ SELECT
     ,COALESCE(payconex_acct_ids                      , '') AS payconex_acct_ids
     ,COALESCE(currency_iso_code                      , '') AS currency_iso_code
     ,COALESCE(exchange_rate                          , '') AS exchange_rate
-    ,COALESCE(pci_monthly_charge                     , '') AS pci_monthly_charge                     
     ,COALESCE(pci_non_compliance_charge              , '') AS pci_non_compliance_charge              
     ,COALESCE(shieldconex_monthly_charge             , '') AS shieldconex_monthly_charge             
     ,COALESCE(shieldconex_transaction_charge         , '') AS shieldconex_transaction_charge         
@@ -55,6 +54,9 @@ SELECT
     ,COALESCE(p2pe_device_activated_charge           , '') AS p2pe_device_activated_charge           
     ,COALESCE(p2pe_device_activating_charge          , '') AS p2pe_device_activating_charge          
     ,COALESCE(p2pe_device_stored_charge              , '') AS p2pe_device_stored_charge              
+    ,COALESCE(pci_compliance_charge                  , '') AS pci_compliance_charge
+    ,COALESCE(pci_non_compliance_charge              , '') AS pci_non_compliance_charge    
+    ,COALESCE(tokenization_charge                    , '') AS tokenization_charge
     ,COALESCE(pricing_ach_credit_fee                 , '') AS pricing_ach_credit_fee                 
     ,COALESCE(pricing_ach_discount_rate              , '') AS pricing_ach_discount_rate              
     ,COALESCE(pricing_ach_monthly_fee                , '') AS pricing_ach_monthly_fee                
@@ -83,12 +85,13 @@ SELECT
     ,COALESCE(pricing_p2pe_tokenization_fee          , '') AS pricing_p2pe_tokenization_fee          
     ,COALESCE(pricing_pci_scans_monthly_fee          , '') AS pricing_pci_scans_monthly_fee          
     ,COALESCE(pricing_pc_acct_updater_fee            , '') AS pricing_pc_acct_updater_fee            
-    ,COALESCE(pci_compliance_fee                     , '') AS pci_compliance_fee                     
-    ,COALESCE(pci_non_compliance_fee                 , '') AS pci_non_compliance_fee                 
+    ,COALESCE(pricing_pci_compliance_fee             , '') AS pricing_pci_compliance_fee                     
+    ,COALESCE(pricing_pci_non_compliance_fee         , '') AS pricing_pci_non_compliance_fee                 
     ,COALESCE(pricing_shieldconex_monthly_fee        , '') AS pricing_shieldconex_monthly_fee        
     ,COALESCE(pricing_shieldconex_transaction_fee    , '') AS pricing_shieldconex_transaction_fee    
     ,COALESCE(pricing_shieldconex_fields_fee         , '') AS pricing_shieldconex_fields_fee         
     ,COALESCE(pricing_shieldconex_monthly_minimum_fee, '') AS pricing_shieldconex_monthly_minimum_fee
+    ,COALESCE(pricing_tokenization_fee               , '') AS pricing_tokenization_fee
     ,COALESCE(total_good_tokenized                   , '') AS total_good_tokenized                   
     ,COALESCE(total_bad_tokenized                    , '') AS total_bad_tokenized                    
     ,COALESCE(total_good_detokenized                 , '') AS total_good_detokenized                 

@@ -1,4 +1,28 @@
-# To back up stored procedures, execute the following mysqldump commands.
-# Note:  commands must be executed on suw-srvr-14 due to security.
-mysqldump -u data_warehouse -h suw-srvr-14.capitalpayments.local -p --no-create-db --no-data --routines --no-create-info auto_billing_dw > auto_billing_dw_stored_routines.sql
-mysqldump -u data_warehouse -h suw-srvr-14.capitalpayments.local -p --no-create-db --no-data --routines --no-create-info auto_billing_staging > auto_billing_staging_stored_routines.sql
+Use this to create the comments necessary to dump the procedures:
+
+SELECT 
+     routine_name 
+    ,CONCAT('mysql -e"SHOW CREATE PROCEDURE ', routine_name, '" ', db, ' > ', routine_name, '.sql')
+FROM dba.v_routines 
+WHERE (db='auto_billing_dw' AND routine_name LIKE 'f_auto_billing_complete%')
+   OR (db='auto_billing_staging' AND routine_name = 'populate_stg_asset')
+   
+   
+   
+Sample Output
+-------------
+
+
+routine_name                            |CONCAT('mysql -e"SHOW CREATE PROCEDURE ', routine_name, '" ', db, ' > ', routine_name, '.sql')                                         |
+----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+f_auto_billing_complete_assets          |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_assets" auto_billing_dw > f_auto_billing_complete_assets.sql                    |
+f_auto_billing_complete_bill_to_id      |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_bill_to_id" auto_billing_dw > f_auto_billing_complete_bill_to_id.sql            |
+f_auto_billing_complete_decryptx        |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_decryptx" auto_billing_dw > f_auto_billing_complete_decryptx.sql                |
+f_auto_billing_complete_demographics    |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_demographics" auto_billing_dw > f_auto_billing_complete_demographics.sql        |
+f_auto_billing_complete_initialize      |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_initialize" auto_billing_dw > f_auto_billing_complete_initialize.sql            |
+f_auto_billing_complete_payconex        |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_payconex" auto_billing_dw > f_auto_billing_complete_payconex.sql                |
+f_auto_billing_complete_payconex_acct_id|mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_payconex_acct_id" auto_billing_dw > f_auto_billing_complete_payconex_acct_id.sql|
+f_auto_billing_complete_pci_charges     |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_pci_charges" auto_billing_dw > f_auto_billing_complete_pci_charges.sql          |
+f_auto_billing_complete_shieldconex     |mysql -e"SHOW CREATE PROCEDURE f_auto_billing_complete_shieldconex" auto_billing_dw > f_auto_billing_complete_shieldconex.sql          |
+populate_stg_asset                      |mysql -e"SHOW CREATE PROCEDURE populate_stg_asset" auto_billing_staging > populate_stg_asset.sql                                       |
+
