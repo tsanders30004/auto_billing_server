@@ -20,7 +20,6 @@ SELECT
     ,COALESCE(payconex_acct_ids                      , '') AS payconex_acct_ids
     ,COALESCE(currency_iso_code                      , '') AS currency_iso_code
     ,COALESCE(exchange_rate                          , '') AS exchange_rate
-    ,COALESCE(pci_non_compliance_charge              , '') AS pci_non_compliance_charge              
     ,COALESCE(shieldconex_monthly_charge             , '') AS shieldconex_monthly_charge             
     ,COALESCE(shieldconex_transaction_charge         , '') AS shieldconex_transaction_charge         
     ,COALESCE(shieldconex_monthly_minimum_charge     , '') AS shieldconex_monthly_minimum_charge     

@@ -12,6 +12,7 @@ IGNORE 1 LINES
 ,@col03
 ,@col04
 ,@col05
+,@col06
 )
 SET 
  decryptx_acct_id = @col01
